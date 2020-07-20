@@ -1,3 +1,127 @@
+# Start configuration added by Zim install {{{
+#
+# User configuration sourced by interactive shells
+#
+
+# -----------------
+# Zsh configuration
+# -----------------
+
+#
+# History
+#
+
+# Remove older command from the history if a duplicate is to be added.
+setopt HIST_IGNORE_ALL_DUPS
+
+#
+# Input/output
+#
+
+# Set editor default keymap to emacs (`-e`) or vi (`-v`)
+bindkey -e
+
+# Prompt for spelling correction of commands.
+#setopt CORRECT
+
+# Customize spelling correction prompt.
+#SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
+
+# Remove path separator from WORDCHARS.
+WORDCHARS=${WORDCHARS//[\/]}
+
+
+# --------------------
+# Module configuration
+# --------------------
+
+#
+# completion
+#
+
+# Set a custom path for the completion dump file.
+# If none is provided, the default ${ZDOTDIR:-${HOME}}/.zcompdump is used.
+#zstyle ':zim:completion' dumpfile "${ZDOTDIR:-${HOME}}/.zcompdump-${ZSH_VERSION}"
+
+#
+# git
+#
+
+# Set a custom prefix for the generated aliases. The default prefix is 'G'.
+#zstyle ':zim:git' aliases-prefix 'g'
+
+#
+# input
+#
+
+# Append `../` to your input for each `.` you type after an initial `..`
+#zstyle ':zim:input' double-dot-expand yes
+
+#
+# termtitle
+#
+
+# Set a custom terminal title format using prompt expansion escape sequences.
+# See http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
+# If none is provided, the default '%n@%m: %~' is used.
+#zstyle ':zim:termtitle' format '%1~'
+
+#
+# zsh-autosuggestions
+#
+
+# Customize the style that the suggestions are shown with.
+# See https://github.com/zsh-users/zsh-autosuggestions/blob/master/README.md#suggestion-highlight-style
+#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
+
+#
+# zsh-syntax-highlighting
+#
+
+# Set what highlighters will be used.
+# See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+
+# Customize the main highlighter styles.
+# See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters/main.md#how-to-tweak-it
+#typeset -A ZSH_HIGHLIGHT_STYLES
+#ZSH_HIGHLIGHT_STYLES[comment]='fg=10'
+
+# ------------------
+# Initialize modules
+# ------------------
+
+if [[ ${ZIM_HOME}/init.zsh -ot ${ZDOTDIR:-${HOME}}/.zimrc ]]; then
+  # Update static initialization script if it's outdated, before sourcing it
+  source ${ZIM_HOME}/zimfw.zsh init -q
+fi
+source ${ZIM_HOME}/init.zsh
+
+# ------------------------------
+# Post-init module configuration
+# ------------------------------
+
+#
+# zsh-history-substring-search
+#
+
+# Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# Bind up and down keys
+zmodload -F zsh/terminfo +p:terminfo
+if [[ -n ${terminfo[kcuu1]} && -n ${terminfo[kcud1]} ]]; then
+  bindkey ${terminfo[kcuu1]} history-substring-search-up
+  bindkey ${terminfo[kcud1]} history-substring-search-down
+fi
+
+bindkey '^P' history-substring-search-up
+bindkey '^N' history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+# }}} End configuration added by Zim install
+
 # Path to your oh-my-zsh installation.
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
@@ -5,7 +129,7 @@ fi
 if [ -f ~/.profile ]; then
     . ~/.profile
 fi
-export ZSH=$HOME/.oh-my-zsh
+# export ZSH=$HOME/.oh-my-zsh
 printf "\033]0;%s@%s:%s\033\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}"
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -23,6 +147,8 @@ POWERLEVEL9K_DIR_HOME_SUBFOLDER_FOREGROUND="white"
 POWERLEVEL9K_DIR_DEFAULT_FOREGROUND="white"
 POWERLEVEL9K_TIME_FORMAT="%D{\u23f0 %H:%M}"
 POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+POWERLEVEL10K_INSTALLATION_PATH=~/.zim/modules/prompt/external-themes/powerlevel10k/powerlevel10k.zsh-theme
+
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
@@ -69,7 +195,7 @@ plugins=(rails ruby autojump git zsh-syntax-highlighting zsh-autosuggestions)
 
 bindkey '\e[1~' beginning-of-line
 bindkey '\e[4~' end-of-line
-source $ZSH/oh-my-zsh.sh
+# source $ZSH/oh-my-zsh.sh
 
 # User configuration
 #NDK=/home/joseph/Downloads/android-ndk-r10d
@@ -96,7 +222,8 @@ export PATH
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
+
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
 
 # ssh
@@ -124,10 +251,12 @@ export FACEBOOK_KEY=""
 export FACEBOOK_SECRET=""
 export GOOGLE_CLIENT_ID=""
 export GOOGLE_CLIENT_SECRET=""
-export GOROOT=/usr/local/go
+export GOPATH=$HOME/golang
+export GOROOT=/usr/local/opt/go/libexec
+export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:$GOROOT/bin
 #export GOPATH=/var/www/html/golang/test_go
 #export GOBIN=$GOPATH/bin
-export PATH="$PATH:${GOROOT}/bin"
 setopt NO_NOMATCH
 
 [[ -s /home/joseph/.autojump/etc/profile.d/autojump.sh ]] && source /home/joseph/.autojump/etc/profile.d/autojump.sh
@@ -143,3 +272,4 @@ function ae {
 }
 zstyle :bracketed-paste-magic paste-init ad
 zstyle :bracketed-paste-magic paste-finish ae
+alias ctags="`brew --prefix`/bin/ctags"

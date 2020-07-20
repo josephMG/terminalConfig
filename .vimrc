@@ -231,6 +231,10 @@ set linebreak
 set laststatus=2
 set hlsearch
 
+" MacOS settings
+syntax enable
+set backspace=indent,eol,start
+
 if &diff
 "	colorscheme random
   highlight DiffAdd    cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
