@@ -203,8 +203,8 @@ bindkey '\e[4~' end-of-line
 #export PATH=$PATH:$NDK:"/home/joseph/.rvm/gems/ruby-2.1.2/bin:/home/joseph/.rvm/gems/ruby-2.1.2@global/bin:/home/joseph/.rvm/rubies/ruby-2.1.2/bin:/home/joseph/.rvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
 #export PATH=$PATH:$NDK
 
-PATH=$PATH:/snap/bin
-export PATH
+# PATH=$PATH:/snap/bin
+# export PATH
 
 #export NDK_MODULE_PATH="/home/joseph/Downloads/OpenNI/Platform/Android/jni/"
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -221,10 +221,10 @@ export PATH
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
-export PATH="$HOME/.rbenv/bin:$PATH"
+# export PATH="$HOME/.rbenv/bin:$PATH"
 
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
-export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"
+export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$HOME/.rbenv/bin:$PATH:/snap/bin:$(yarn global bin)"
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
@@ -247,16 +247,8 @@ function t() {
 
 #export TERM="xterm"
 #export TERM="xterm-256color"
-export FACEBOOK_KEY=""
-export FACEBOOK_SECRET=""
-export GOOGLE_CLIENT_ID=""
-export GOOGLE_CLIENT_SECRET=""
 export GOPATH=$HOME/golang
-export GOROOT=/usr/local/opt/go/libexec
 export PATH=$PATH:$GOPATH/bin
-export PATH=$PATH:$GOROOT/bin
-#export GOPATH=/var/www/html/golang/test_go
-#export GOBIN=$GOPATH/bin
 setopt NO_NOMATCH
 
 [[ -s /home/joseph/.autojump/etc/profile.d/autojump.sh ]] && source /home/joseph/.autojump/etc/profile.d/autojump.sh
@@ -273,3 +265,13 @@ function ae {
 zstyle :bracketed-paste-magic paste-init ad
 zstyle :bracketed-paste-magic paste-finish ae
 alias ctags="`brew --prefix`/bin/ctags"
+
+# pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
