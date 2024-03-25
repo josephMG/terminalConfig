@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # Start configuration added by Zim install {{{
 #
 # User configuration sourced by interactive shells
@@ -30,18 +37,16 @@ bindkey -e
 # Remove path separator from WORDCHARS.
 WORDCHARS=${WORDCHARS//[\/]}
 
+# -----------------
+# Zim configuration
+# -----------------
+
+# Use degit instead of git as the default tool to install and update modules.
+#zstyle ':zim:zmodule' use 'degit'
 
 # --------------------
 # Module configuration
 # --------------------
-
-#
-# completion
-#
-
-# Set a custom path for the completion dump file.
-# If none is provided, the default ${ZDOTDIR:-${HOME}}/.zcompdump is used.
-#zstyle ':zim:completion' dumpfile "${ZDOTDIR:-${HOME}}/.zcompdump-${ZSH_VERSION}"
 
 #
 # git
@@ -70,9 +75,13 @@ WORDCHARS=${WORDCHARS//[\/]}
 # zsh-autosuggestions
 #
 
+# Disable automatic widget re-binding on each precmd. This can be set when
+# zsh-users/zsh-autosuggestions is the last module in your ~/.zimrc.
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+
 # Customize the style that the suggestions are shown with.
 # See https://github.com/zsh-users/zsh-autosuggestions/blob/master/README.md#suggestion-highlight-style
-#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
+#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
 
 #
 # zsh-syntax-highlighting
@@ -85,16 +94,28 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 # Customize the main highlighter styles.
 # See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters/main.md#how-to-tweak-it
 #typeset -A ZSH_HIGHLIGHT_STYLES
-#ZSH_HIGHLIGHT_STYLES[comment]='fg=10'
+#ZSH_HIGHLIGHT_STYLES[comment]='fg=242'
 
 # ------------------
 # Initialize modules
 # ------------------
 
-if [[ ${ZIM_HOME}/init.zsh -ot ${ZDOTDIR:-${HOME}}/.zimrc ]]; then
-  # Update static initialization script if it's outdated, before sourcing it
+ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim
+# Download zimfw plugin manager if missing.
+if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
+  if (( ${+commands[curl]} )); then
+    curl -fsSL --create-dirs -o ${ZIM_HOME}/zimfw.zsh \
+        https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+  else
+    mkdir -p ${ZIM_HOME} && wget -nv -O ${ZIM_HOME}/zimfw.zsh \
+        https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+  fi
+fi
+# Install missing modules, and update ${ZIM_HOME}/init.zsh if missing or outdated.
+if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZDOTDIR:-${HOME}}/.zimrc ]]; then
   source ${ZIM_HOME}/zimfw.zsh init -q
 fi
+# Initialize modules.
 source ${ZIM_HOME}/init.zsh
 
 # ------------------------------
@@ -105,22 +126,17 @@ source ${ZIM_HOME}/init.zsh
 # zsh-history-substring-search
 #
 
-# Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-
-# Bind up and down keys
 zmodload -F zsh/terminfo +p:terminfo
-if [[ -n ${terminfo[kcuu1]} && -n ${terminfo[kcud1]} ]]; then
-  bindkey ${terminfo[kcuu1]} history-substring-search-up
-  bindkey ${terminfo[kcud1]} history-substring-search-down
-fi
-
-bindkey '^P' history-substring-search-up
-bindkey '^N' history-substring-search-down
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
+# Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
+for key ('^[[A' '^P' ${terminfo[kcuu1]}) bindkey ${key} history-substring-search-up
+for key ('^[[B' '^N' ${terminfo[kcud1]}) bindkey ${key} history-substring-search-down
+for key ('k') bindkey -M vicmd ${key} history-substring-search-up
+for key ('j') bindkey -M vicmd ${key} history-substring-search-down
+unset key
 # }}} End configuration added by Zim install
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Path to your oh-my-zsh installation.
 if [ -f ~/.bash_aliases ]; then
@@ -139,15 +155,15 @@ printf "\033]0;%s@%s:%s\033\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}"
 #ZSH_THEME="pygmalion"
 #ZSH_THEME="ys"
 
-ZSH_THEME="powerlevel10k/powerlevel10k"
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir_writable dir vcs)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs history time)
-POWERLEVEL9K_DIR_HOME_FOREGROUND="white"
-POWERLEVEL9K_DIR_HOME_SUBFOLDER_FOREGROUND="white"
-POWERLEVEL9K_DIR_DEFAULT_FOREGROUND="white"
-POWERLEVEL9K_TIME_FORMAT="%D{\u23f0 %H:%M}"
-POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-POWERLEVEL10K_INSTALLATION_PATH=~/.zim/modules/prompt/external-themes/powerlevel10k/powerlevel10k.zsh-theme
+#ZSH_THEME="powerlevel10k/powerlevel10k"
+#POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir_writable dir vcs)
+#POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs history time)
+#POWERLEVEL9K_DIR_HOME_FOREGROUND="white"
+#POWERLEVEL9K_DIR_HOME_SUBFOLDER_FOREGROUND="white"
+#POWERLEVEL9K_DIR_DEFAULT_FOREGROUND="white"
+#POWERLEVEL9K_TIME_FORMAT="%D{\u23f0 %H:%M}"
+#POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+#POWERLEVEL10K_INSTALLATION_PATH=~/.zim/modules/prompt/external-themes/powerlevel10k/powerlevel10k.zsh-theme
 
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
@@ -195,44 +211,11 @@ plugins=(rails ruby autojump git zsh-syntax-highlighting zsh-autosuggestions)
 
 bindkey '\e[1~' beginning-of-line
 bindkey '\e[4~' end-of-line
-# source $ZSH/oh-my-zsh.sh
-
-# User configuration
-#NDK=/home/joseph/Downloads/android-ndk-r10d
-#export NDK
-#export PATH=$PATH:$NDK:"/home/joseph/.rvm/gems/ruby-2.1.2/bin:/home/joseph/.rvm/gems/ruby-2.1.2@global/bin:/home/joseph/.rvm/rubies/ruby-2.1.2/bin:/home/joseph/.rvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
-#export PATH=$PATH:$NDK
-
-# PATH=$PATH:/snap/bin
-# export PATH
-
-#export NDK_MODULE_PATH="/home/joseph/Downloads/OpenNI/Platform/Android/jni/"
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-# export PATH="$HOME/.rbenv/bin:$PATH"
-
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
-export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$HOME/.rbenv/bin:$PATH:/snap/bin:$(yarn global bin)"
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 if [ -z "$SSH_AUTH_SOCK" ] ; then
   eval `ssh-agent -s`
-  ssh-add ~/.ssh/lentex_digitalocean
-  ssh-add ~/.ssh/clik_u_gitlab
-  ssh-add ~/.ssh/gitlab
 fi
 function git_diff() {
 	git diff --no-ext-diff -w "$@" | vim -R -
@@ -252,7 +235,11 @@ export PATH=$PATH:$GOPATH/bin
 setopt NO_NOMATCH
 
 [[ -s /home/joseph/.autojump/etc/profile.d/autojump.sh ]] && source /home/joseph/.autojump/etc/profile.d/autojump.sh
-autoload -U compinit && compinit -u
+#fpath=(${ASDF_DIR}/completions $fpath)
+#autoload -U +X bashcompinit && bashcompinit
+#autoload -Uz compinit && compinit
+autoload -Uz compinit && compinit
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
 autoload -Uz bracketed-paste-magic
 zle -N bracketed-paste bracketed-paste-magic
@@ -264,14 +251,9 @@ function ae {
 }
 zstyle :bracketed-paste-magic paste-init ad
 zstyle :bracketed-paste-magic paste-finish ae
-alias ctags="`brew --prefix`/bin/ctags"
 
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
