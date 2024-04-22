@@ -1,3 +1,6 @@
+syntax on
+set re=0
+set foldmethod=manual         " zfit / zo
 
 set encoding=utf-8
 set nocompatible              " be iMproved, required
