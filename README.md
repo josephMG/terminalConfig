@@ -1,0 +1,11 @@
+- chrome
+- brew
+- item2
+  - https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/Tomorrow%20Night%20Eighties.itermcolors
+- vim-plug
+- docker desktop
+- zim
+- tmux
+- asdf
+  - asdf-node
+  - asdf-python
