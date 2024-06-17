@@ -1,6 +1,8 @@
 syntax on
 set re=0
-set foldmethod=manual         " zfit / zo
+set foldmethod=syntax "syntax highlighting items specify folds
+let javaScript_fold=1 "activate folding by JS syntax
+set foldlevelstart=99 "start file with all folds opened
 
 set encoding=utf-8
 set nocompatible              " be iMproved, required
