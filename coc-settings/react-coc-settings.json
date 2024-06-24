@@ -1,9 +1,21 @@
 {
-  "coc.preferences.formatOnSaveFiletypes": ["*"],
+  "coc.preferences.formatOnSaveFiletypes": [
+    "*"
+  ],
+  "codeLens.enable": true,
+  "codeLens.position": "eol",
+  "codeLens.separator": " < ",
   "eslint.autoFixOnSave": true,
+  "eslint.fixOnSaveTimeout": 2000,
+  "eslint.run": "onSave",
   "tsserver.useLocalTsdk": true,
   "tsserver.ignoreLocalTsserver": true,
   "javascript.suggest.autoImports": true,
   "typescript.suggest.autoImports": true,
-  "diagnostic.displayByAle": false
+  "typescript.implementationsCodeLens.enabled": true,
+  "typescript.referencesCodeLens.enabled": true,
+  "javascript.implementationsCodeLens.enabled": true,
+  "javascript.referencesCodeLens.enabled": true,
+  "diagnostic.displayByAle": false,
+  "tsserver.enableTracing": true
 }

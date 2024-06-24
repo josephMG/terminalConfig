@@ -18,5 +18,6 @@
       "watchFile": "useFsEventsOnParentDirectory",
       "watchDirectory": "useFsEvents",
       "fallbackPolling": "fixedPollingInterval"
-    }
+    },
+    "snippets.ultisnips.pythonPrompt": false
   }
