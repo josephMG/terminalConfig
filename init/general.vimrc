@@ -1,8 +1,3 @@
-syntax on
-set re=0
-set foldmethod=syntax "syntax highlighting items specify folds
-let javaScript_fold=1 "activate folding by JS syntax
-set foldlevelstart=99 "start file with all folds opened
 
 set encoding=utf-8
 set nocompatible              " be iMproved, required
@@ -30,6 +25,8 @@ set hlsearch
 
 " MacOS settings
 syntax enable
+syntax on
+set re=0
 set backspace=indent,eol,start
 
 " show spaces as dots
@@ -38,6 +35,12 @@ set list
 
 " setqflist to open in new tab
 set switchbuf+=usetab,newtab
+
+" set vim background transparent
+hi Normal ctermfg=255 ctermbg=NONE
+hi Visual  guifg=White guibg=LightBlue gui=none ctermfg=green ctermbg=white
+hi Special ctermfg=167
+
 
 if &diff
 "	colorscheme random
