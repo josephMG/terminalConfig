@@ -173,6 +173,7 @@ command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument
 """""""color
 hi CocCodeLens ctermfg=77
 """ Popup selection color
-hi CocMenuSel ctermbg=13 ctermfg=8
+hi CocMenuSel ctermbg=13 ctermfg=232
+"hi CocMenuSel ctermbg=13 ctermfg=8
 """ Reference selection color
 hi CocListLine  ctermbg=237 ctermfg=yellow guibg=#3e434e
