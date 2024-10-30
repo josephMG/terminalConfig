@@ -18,11 +18,16 @@ Plug 'mattn/emmet-vim'
 "Plug 'storyn26383/vim-vue'
 "Plug 'digitaltoad/vim-pug'
 "Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 Plug 'mlaursen/vim-react-snippets'
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'pangloss/vim-javascript'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'chemzqm/vim-jsx-improve'
+Plug 'heavenshell/vim-jsdoc', {
+  \ 'for': ['javascript', 'javascript.jsx','typescript'],
+  \ 'do': 'make install'
+\}
 "Plug 'mxw/vim-jsx'
 " Plug 'leafgarland/typescript-vim'
 " Plug 'peitalin/vim-jsx-typescript'
