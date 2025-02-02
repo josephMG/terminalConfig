@@ -1,0 +1,41 @@
+
+{
+  "name": "DevContainer Base template",
+  "runArgs": ["--name", "${localEnv:USER}_devcontainer"],
+
+  "build": {
+    "dockerfile": "./Dockerfile",
+    "context": "."
+  },
+
+  "forwardPorts": [
+    // typical ports
+    3000, 8080, 5000
+  ],
+
+  "features": {
+    // Install common utilities
+    "ghcr.io/devcontainers/features/common-utils:latest": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "upgradePackages": true,
+      "username": "vscode",
+      "uid": "1000",
+      "gid": "1000"
+    },
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/go:1": {},
+    "ghcr.io/robbert229/devcontainer-features/postgresql-client:1": {},
+    "ghcr.io/devcontainers/features/python:1": {},
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/duduribeiro/devcontainer-features/neovim:1": { "version": "nightly" }
+  },
+
+  "overrideFeatureInstallOrder": [
+    "ghcr.io/devcontainers/features/common-utils"
+  ],
+  "onCreateCommand": "/usr/bin/zsh ./.devcontainer/on-create.sh > ~/on-create.log",
+  "postCreateCommand": "/usr/bin/zsh ./.devcontainer/post-create.sh > ~/post-create.log"
+}
+

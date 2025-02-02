@@ -1,11 +1,20 @@
 - chrome
 - brew
+  - ripgrep
+  - fzf
 - item2
   - https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/Tomorrow%20Night%20Eighties.itermcolors
-- vim-plug
+- vim-plug or neovim
 - docker desktop
 - zim
+  - p10k
 - tmux
 - asdf
   - asdf-node
   - asdf-python
+- npm
+  - devcontainer/cli
+  - typescript
+  - typescript-language-server
+  - @vtsls/language-server
+  - pyright
