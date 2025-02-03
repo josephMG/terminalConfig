@@ -10,8 +10,6 @@ require("bufferline").setup({})
 
 -- catppuccin colorscheme
 vim.cmd.colorscheme("catppuccin-mocha")
-
-LineNumberColors()
 -- lualine
 
 require("lualine").setup({

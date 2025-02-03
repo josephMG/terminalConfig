@@ -1,4 +1,5 @@
 return {
+
   -- LSP
   {
     "neovim/nvim-lspconfig",
@@ -30,8 +31,6 @@ return {
         },
         ts_ls = {
           enabled = true,
-        },
-        vtsls = {
           -- explicitly add default filetypes, so that we can extend
           -- them in related extras
           filetypes = {
@@ -44,16 +43,6 @@ return {
           },
           settings = {
             complete_function_calls = true,
-            vtsls = {
-              enableMoveToFileCodeAction = true,
-              autoUseWorkspaceTsdk = true,
-              experimental = {
-                maxInlayHintLength = 30,
-                completion = {
-                  enableServerSideFuzzyMatch = true,
-                },
-              },
-            },
             typescript = {
               updateImportsOnFileMove = { enabled = "always" },
               suggest = {
@@ -138,64 +127,10 @@ return {
           -- disable tsserver
           return true
         end,
-        ts_ls = function()
-          -- disable tsserver
-          return true
-        end,
-        vtsls = function(_, opts)
-          vim.lsp.on_attach(function(client, buffer)
-            client.commands["_typescript.moveToFileRefactoring"] = function(command, ctx)
-              ---@type string, string, lsp.Range
-              local action, uri, range = unpack(command.arguments)
-
-              local function move(newf)
-                client.request("workspace/executeCommand", {
-                  command = command.command,
-                  arguments = { action, uri, range, newf },
-                })
-              end
-
-              local fname = vim.uri_to_fname(uri)
-              client.request("workspace/executeCommand", {
-                command = "typescript.tsserverRequest",
-                arguments = {
-                  "getMoveToRefactoringFileSuggestions",
-                  {
-                    file = fname,
-                    startLine = range.start.line + 1,
-                    startOffset = range.start.character + 1,
-                    endLine = range["end"].line + 1,
-                    endOffset = range["end"].character + 1,
-                  },
-                },
-              }, function(_, result)
-                ---@type string[]
-                local files = result.body.files
-                table.insert(files, 1, "Enter new path...")
-                vim.ui.select(files, {
-                  prompt = "Select move destination:",
-                  format_item = function(f)
-                    return vim.fn.fnamemodify(f, ":~:.")
-                  end,
-                }, function(f)
-                  if f and f:find("^Enter new path") then
-                    vim.ui.input({
-                      prompt = "Enter move destination:",
-                      default = vim.fn.fnamemodify(fname, ":h") .. "/",
-                      completion = "file",
-                    }, function(newf)
-                      return newf and move(newf)
-                    end)
-                  elseif f then
-                    move(f)
-                  end
-                end)
-              end)
-            end
-          end, "vtsls")
+        ts_ls = function(_, opts)
           -- copy typescript settings to javascript
           opts.settings.javascript =
-              vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
+            vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
         end,
       },
     },
@@ -206,11 +141,8 @@ return {
     end,
     config = function()
       local lsp_defaults = require("lspconfig").util.default_config
-
-      -- Add cmp_nvim_lsp capabilities settings to lspconfig
-      -- This should be executed before you configure any language server
-      lsp_defaults.capabilities =
-          vim.tbl_deep_extend("force", lsp_defaults.capabilities, require("cmp_nvim_lsp").default_capabilities())
+      local mason_lspconfig = require("mason-lspconfig")
+      local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
       -- Set which codelens text levels to show
       local original_set_virtual_text = vim.lsp.diagnostic.set_virtual_text
@@ -234,50 +166,209 @@ return {
       -- LspAttach is where you enable features that only work
       -- if there is a language server active in the file
       vim.api.nvim_create_autocmd("LspAttach", {
-        desc = "LSP actions",
-        callback = function(event)
-          local opts = { buffer = event.buf }
+        group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+        callback = function(ev)
+          local keymap = vim.keymap
+          -- Buffer local mappings.
+          -- See `:help vim.lsp.*` for documentation on any of the below functions
+          local opts = { buffer = ev.buf, silent = true }
 
-          vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
-          vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
-          vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
-          vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
-          vim.keymap.set("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
-          vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
-          vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
-          vim.keymap.set("n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-          vim.keymap.set({ "n", "x" }, "<F3>", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", opts)
-          vim.keymap.set("n", "<F4>", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
-          local id = vim.tbl_get(event, "data", "client_id")
-          local client = id and vim.lsp.get_client_by_id(id)
-          if client == nil then
-            return
-          end
+          -- set keybinds
+          opts.desc = "Show LSP references"
+          keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
+
+          opts.desc = "Go to declaration"
+          keymap.set("n", "gD", vim.lsp.buf.declaration, opts) -- go to declaration
+
+          opts.desc = "Show LSP definitions"
+          keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts) -- show lsp definitions
+
+          opts.desc = "Show LSP implementations"
+          keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts) -- show lsp implementations
+
+          opts.desc = "Show LSP type definitions"
+          keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts) -- show lsp type definitions
+
+          opts.desc = "See available code actions"
+          keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
+
+          opts.desc = "Smart rename"
+          keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
+
+          opts.desc = "Show buffer diagnostics"
+          keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
+
+          opts.desc = "Show line diagnostics"
+          keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
+
+          opts.desc = "Go to previous diagnostic"
+          keymap.set("n", "[d", vim.diagnostic.goto_prev, opts) -- jump to previous diagnostic in buffer
+
+          opts.desc = "Go to next diagnostic"
+          keymap.set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
+
+          opts.desc = "Show documentation for what is under cursor"
+          keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
+
+          opts.desc = "Restart LSP"
+          keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
         end,
       })
 
-      local function organize_imports()
-        local params = {
-          command = "_typescript.organizeImports",
-          arguments = { vim.api.nvim_buf_get_name(0) },
-          title = "",
-        }
-        vim.lsp.buf.execute_command(params)
+      -- used to enable autocompletion (assign to every lsp server config)
+      local capabilities = cmp_nvim_lsp.default_capabilities()
+
+      -- Change the Diagnostic symbols in the sign column (gutter)
+      -- (not in youtube nvim video)
+      local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
+      for type, icon in pairs(signs) do
+        local hl = "DiagnosticSign" .. type
+        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
       end
-      require("lspconfig").pyright.setup({})
-      require("lspconfig").vtsls.setup({
-        commands = {
-          OrganizeImports = {
-            organize_imports,
-            description = "Organize Imports",
-          },
-        },
+
+      mason_lspconfig.setup_handlers({
+        -- this first function is the "default handler"
+        -- it applies to every language server without a "custom handler"
+        -- this function is run on first installation time
+        function(server_name)
+          require("lspconfig")[server_name].setup({
+            capabilities = capabilities,
+          })
+        end,
+        ["ts_ls"] = function()
+          local lspconfig = require("lspconfig")
+          local function organize_imports()
+            local params = {
+              command = "_typescript.organizeImports",
+              arguments = { vim.api.nvim_buf_get_name(0) },
+              title = "",
+            }
+            vim.lsp.buf.execute_command(params)
+          end
+          local function remove_unused_imports()
+            vim.lsp.buf.code_action({
+              apply = true,
+              context = {
+                only = { "source.removeUnusedImports.ts" },
+                diagnostics = {},
+              },
+            })
+          end
+          lspconfig.ts_ls.setup({
+            capabilities = capabilities,
+            on_attach = function(client, bufnr)
+              -- vim.api.nvim_create_autocmd("BufWritePre", {
+              --   group = vim.api.nvim_create_augroup("ts_imports", { clear = true }),
+              --   callback = function()
+              --     vim.lsp.buf.code_action({
+              --       apply = true,
+              --       context = { only = { "source.addMissingImports.ts" }, diagnostics = {} },
+              --     })
+              --     vim.lsp.buf.code_action({
+              --       apply = true,
+              --       context = { only = { "source.removeUnused.ts" }, diagnostics = {} },
+              --     })
+              --   end,
+              -- })
+            end,
+            commands = {
+              OrganizeImports = {
+                organize_imports,
+                description = "Organize Imports",
+              },
+              RemoveUnusedImports = {
+                remove_unused_imports,
+                description = "Remove Unused Imports",
+              },
+            },
+          })
+        end,
+        ["lua_ls"] = function()
+          local lspconfig = require("lspconfig")
+          lspconfig.lua_ls.setup({
+            capabilities = capabilities,
+            settings = {
+              Lua = {
+                diagnostics = {
+                  globals = { "vim" },
+                },
+              },
+            },
+          })
+        end,
       })
-      require("lspconfig").lua_ls.setup({
-        settings = {
-          Lua = {
-            diagnostics = { "vim" },
-          },
+    end,
+  },
+
+  -- Mason
+  {
+
+    "williamboman/mason.nvim",
+    dependencies = {
+      "williamboman/mason-lspconfig.nvim",
+      "WhoIsSethDaniel/mason-tool-installer.nvim",
+    },
+    lazy = false,
+    cmd = "Mason",
+    keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
+    build = ":MasonUpdate",
+    opts_extend = { "ensure_installed" },
+    opts = function(_, opts)
+      opts.ensure_installed = opts.ensure_installed or {
+        "stylua",
+        "shfmt",
+        "prettier",
+      }
+      table.insert(opts.ensure_installed, "js-debug-adapter")
+    end,
+    ---@param opts MasonSettings | {ensure_installed: string[]}
+    config = function(_, opts)
+      require("mason").setup(opts)
+      local mason_tool_installer = require("mason-tool-installer")
+      local mason_lspconfig = require("mason-lspconfig")
+      local mr = require("mason-registry")
+      mr:on("package:install:success", function()
+        vim.defer_fn(function()
+          -- trigger FileType event to possibly load this newly installed LSP server
+          require("lazy.core.handler.event").trigger({
+            event = "FileType",
+            buf = vim.api.nvim_get_current_buf(),
+          })
+        end, 100)
+      end)
+
+      mr.refresh(function()
+        for _, tool in ipairs(opts.ensure_installed) do
+          local p = mr.get_package(tool)
+          if not p:is_installed() then
+            p:install()
+          end
+        end
+      end)
+      -- import mason-lspconfig
+      mason_lspconfig.setup({
+        -- list of servers for mason to install
+        ensure_installed = {
+          "ts_ls",
+          "html",
+          "cssls",
+          "tailwindcss",
+          "lua_ls",
+          "emmet_language_server",
+          "pyright",
+        },
+        -- auto-install configured servers (with lspconfig)
+        automatic_installation = true, -- not the same as ensure_installed
+      })
+
+      mason_tool_installer.setup({
+        ensure_installed = {
+          "prettier", -- prettier formatter
+          "stylua", -- lua formatter
+          "isort", -- python formatter
+          "black", -- python formatter
+          "pylint", -- python linter
+          "eslint_d", -- js linter
         },
       })
     end,
