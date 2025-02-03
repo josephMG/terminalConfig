@@ -1,19 +1,25 @@
+function LineNumberColors()
+  vim.api.nvim_set_hl(0, "LineNrAbove", { fg = "#51B3EC", bold = true })
+  vim.api.nvim_set_hl(0, "LineNr", { fg = "white", bold = true })
+  vim.api.nvim_set_hl(0, "LineNrBelow", { fg = "#FB508F", bold = true })
+end
 
 -- bufferline
 vim.opt.termguicolors = true
-require("bufferline").setup{}
+require("bufferline").setup({})
 
 -- catppuccin colorscheme
-vim.cmd.colorscheme "catppuccin-mocha"
+vim.cmd.colorscheme("catppuccin-mocha")
 
+LineNumberColors()
 -- lualine
 
-require('lualine').setup {
+require("lualine").setup({
   options = {
     icons_enabled = true,
-    theme = 'auto',
-    component_separators = { left = '', right = ''},
-    section_separators = { left = '', right = ''},
+    theme = "auto",
+    component_separators = { left = "", right = "" },
+    section_separators = { left = "", right = "" },
     disabled_filetypes = {
       statusline = {},
       winbar = {},
@@ -25,37 +31,35 @@ require('lualine').setup {
       statusline = 1000,
       tabline = 1000,
       winbar = 1000,
-    }
+    },
   },
   sections = {
-    lualine_a = {'mode'},
-    lualine_b = {'branch', 'diff', 'diagnostics'},
-    lualine_c = {'filename'},
-    lualine_x = {'encoding', 'fileformat', 'filetype'},
-    lualine_y = {'progress', 'location'},
+    lualine_a = { "mode" },
+    lualine_b = { "branch", "diff", "diagnostics" },
+    lualine_c = { "filename" },
+    lualine_x = { "encoding", "fileformat", "filetype" },
+    lualine_y = { "progress", "location" },
     lualine_z = {
       {
-        'datetime',
+        "datetime",
         -- options: default, us, uk, iso, or your own format string ("%H:%M", etc..)
-        style = '%H:%M'
-      }
-    }
+        style = "%H:%M",
+      },
+    },
   },
   inactive_sections = {
     lualine_a = {},
     lualine_b = {},
-    lualine_c = {'filename'},
-    lualine_x = {'location'},
+    lualine_c = { "filename" },
+    lualine_x = { "location" },
     lualine_y = {},
-    lualine_z = {}
+    lualine_z = {},
   },
   tabline = {},
   winbar = {},
   inactive_winbar = {},
-  extensions = {}
-}
-
-
+  extensions = {},
+})
 
 -- noice
 require("noice").setup({
