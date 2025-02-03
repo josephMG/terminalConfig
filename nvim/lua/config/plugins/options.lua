@@ -80,6 +80,3 @@ require("noice").setup({
 -- lsp
 require("mason").setup()
 require("mason-lspconfig").setup()
-require'lspconfig'.pyright.setup{}
--- require("lspconfig.configs").vtsls = require("vtsls").lspconfig
-require'lspconfig'.vtsls.setup{}

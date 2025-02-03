@@ -1,3 +1,4 @@
+
 return {
   -- LSP
   {
@@ -22,10 +23,9 @@ return {
           enabled = true,
         },
         ts_ls = {
-          enabled = false,
+          enabled = true,
         },
         vtsls = {
-          enabled = true,
           -- explicitly add default filetypes, so that we can extend
           -- them in related extras
           filetypes = {
@@ -65,6 +65,18 @@ return {
           },
           keys = {
             {
+              "gD",
+              function()
+                local params = vim.lsp.util.make_position_params()
+                vim.lsp.execute({
+                  command = "typescript.goToSourceDefinition",
+                  arguments = { params.textDocument.uri, params.position },
+                  open = true,
+                })
+              end,
+              desc = "Goto Source Definition",
+            },
+            {
               "gR",
               function()
                 vim.lsp.execute({
@@ -75,26 +87,34 @@ return {
               end,
               desc = "File References",
             },
-            -- {
-            --   "<leader>co",
-            --   vim.lsp.action["source.organizeImports"],
-            --   desc = "Organize Imports",
-            -- },
-            -- {
-            --   "<leader>cM",
-            --   vim.lsp.action["source.addMissingImports.ts"],
-            --   desc = "Add missing imports",
-            -- },
-            -- {
-            --   "<leader>cu",
-            --   vim.lsp.action["source.removeUnused.ts"],
-            --   desc = "Remove unused imports",
-            -- },
-            -- {
-            --   "<leader>cD",
-            --   vim.lsp.action["source.fixAll.ts"],
-            --   desc = "Fix all diagnostics",
-            -- },
+            {
+              "<leader>co",
+              function()
+                vim.lsp.buf.code_action({ source = { organizeImports = true } })
+              end,
+              desc = "Organize Imports",
+            },
+            {
+              "<leader>cM",
+              function()
+                vim.lsp.buf.code_action({ source = { addMissingImports = { ts = true } } })
+              end,
+              desc = "Add missing imports",
+            },
+            {
+              "<leader>cu",
+              function()
+                vim.lsp.buf.code_action({ source = { removeUnused = { ts = true } } })
+              end,
+              desc = "Remove unused imports",
+            },
+            {
+              "<leader>cD",
+              function()
+                vim.lsp.buf.code_action({ source = { fixAll = { ts = true } } })
+              end,
+              desc = "Fix all diagnostics",
+            },
             {
               "<leader>cV",
               function()
@@ -228,16 +248,39 @@ return {
         end,
       })
 
-      require('mason-lspconfig').setup({
-        ensure_installed = {'vtsls', 'pyright'},
-        handlers = {
-          -- this first function is the "default handler"
-          -- it applies to every language server without a "custom handler"
-          function(server_name)
-            require('lspconfig')[server_name].setup({})
-          end,
+      local function organize_imports()
+        local params = {
+          command = "_typescript.organizeImports",
+          arguments = {vim.api.nvim_buf_get_name(0)},
+          title = ""
         }
-      })
+        vim.lsp.buf.execute_command(params)
+      end
+      require'lspconfig'.pyright.setup{}
+      require'lspconfig'.vtsls.setup{
+        commands = {
+          OrganizeImports = {
+            organize_imports,
+            description = "Organize Imports"
+          }
+        }
+      }
+      require'lspconfig'.lua_ls.setup {
+        settings = {
+          Lua = {
+            diagnostics = { "vim" }
+          }
+        }
+      }
     end
-  }
+  },
+
+  -- Autocompletion
+  {'hrsh7th/nvim-cmp'},
+  {'hrsh7th/cmp-buffer'},
+  {'hrsh7th/cmp-path'},
+  {'saadparwaiz1/cmp_luasnip'},
+  {'hrsh7th/cmp-nvim-lsp'},
+  {'hrsh7th/cmp-nvim-lua'},
+
 }

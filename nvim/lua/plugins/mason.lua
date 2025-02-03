@@ -1,6 +1,9 @@
 return {
 
   "williamboman/mason.nvim",
+  dependencies = {
+    "williamboman/mason-lspconfig.nvim",
+  },
   lazy = false,
   cmd = "Mason",
   keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
@@ -10,6 +13,7 @@ return {
     opts.ensure_installed = opts.ensure_installed or { 
       "stylua",
       "shfmt",
+      "prettier"
     }
     table.insert(opts.ensure_installed, "js-debug-adapter")
   end,
@@ -35,5 +39,30 @@ return {
         end
       end
     end)
+    -- import mason-lspconfig
+    local mason_lspconfig = require("mason-lspconfig")
+    mason_lspconfig.setup({
+      -- list of servers for mason to install
+      ensure_installed = {
+        "vtsls",
+        "html",
+        "cssls",
+        "tailwindcss",
+        "lua_ls",
+        "emmet_language_server",
+        "pyright"
+
+      },
+      handlers = {
+        -- this first function is the "default handler"
+        -- it applies to every language server without a "custom handler"
+        function(server_name)
+          require('lspconfig')[server_name].setup({})
+        end,
+      },
+      -- auto-install configured servers (with lspconfig)
+      automatic_installation = true, -- not the same as ensure_installed
+    })
   end,
 }
+
