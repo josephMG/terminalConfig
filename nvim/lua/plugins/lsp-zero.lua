@@ -30,6 +30,9 @@ return {
           enabled = true,
         },
         ts_ls = {
+          codelens = {
+            enabled = true,
+          },
           enabled = true,
           -- explicitly add default filetypes, so that we can extend
           -- them in related extras
@@ -42,8 +45,34 @@ return {
             "typescript.tsx",
           },
           settings = {
-            complete_function_calls = true,
+            codelens = {
+              enabled = true,
+            },
+            suggest = {
+              completeFunctionCalls = true,
+            },
             typescript = {
+              codelens = {
+                enabled = true,
+              },
+              implementationsCodeLens = { enabled = true },
+              referencesCodeLens = { enabled = true, showOnAllFunctions = true },
+              updateImportsOnFileMove = { enabled = "always" },
+              suggest = {
+                completeFunctionCalls = true,
+              },
+              inlayHints = {
+                enumMemberValues = { enabled = true },
+                functionLikeReturnTypes = { enabled = true },
+                parameterNames = { enabled = "literals" },
+                parameterTypes = { enabled = true },
+                propertyDeclarationTypes = { enabled = true },
+                variableTypes = { enabled = false },
+              },
+            },
+            javascript = {
+              implementationsCodeLens = { enabled = true },
+              referencesCodeLens = { enabled = true, showOnAllFunctions = true },
               updateImportsOnFileMove = { enabled = "always" },
               suggest = {
                 completeFunctionCalls = true,
@@ -139,7 +168,7 @@ return {
       -- This will avoid an annoying layout shift in the screen
       vim.opt.signcolumn = "yes"
     end,
-    config = function()
+    config = function(_, opts)
       local lsp_defaults = require("lspconfig").util.default_config
       local mason_lspconfig = require("mason-lspconfig")
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
@@ -172,22 +201,29 @@ return {
           -- Buffer local mappings.
           -- See `:help vim.lsp.*` for documentation on any of the below functions
           local opts = { buffer = ev.buf, silent = true }
-
           -- set keybinds
+          keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
+
           opts.desc = "Show LSP references"
+          keymap.set("n", "gr", vim.lsp.buf.references, opts)
+
+          opts.desc = "Show LSP references (Telescope)"
           keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
 
           opts.desc = "Go to declaration"
-          keymap.set("n", "gD", vim.lsp.buf.declaration, opts) -- go to declaration
+          keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
 
           opts.desc = "Show LSP definitions"
-          keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts) -- show lsp definitions
+          keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+          -- keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts) -- show lsp definitions
 
           opts.desc = "Show LSP implementations"
-          keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts) -- show lsp implementations
+          keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+          -- keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts) -- show lsp implementations
 
           opts.desc = "Show LSP type definitions"
-          keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts) -- show lsp type definitions
+          keymap.set("n", "gt", vim.lsp.buf.type_definition, opts) -- show lsp type definitions
+          -- keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts) -- show lsp type definitions
 
           opts.desc = "See available code actions"
           keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
@@ -255,8 +291,26 @@ return {
             })
           end
           lspconfig.ts_ls.setup({
+            filetypes = {
+              "javascript",
+              "javascriptreact",
+              "javascript.jsx",
+              "typescript",
+              "typescriptreact",
+              "typescript.tsx",
+            },
             capabilities = capabilities,
             on_attach = function(client, bufnr)
+              if vim.lsp.codelens then
+                if client.supports_method("textDocument/codeLens") then
+                  vim.lsp.codelens.refresh()
+                  --- autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
+                  vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+                    buffer = bufnr,
+                    callback = vim.lsp.codelens.refresh,
+                  })
+                end
+              end
               -- vim.api.nvim_create_autocmd("BufWritePre", {
               --   group = vim.api.nvim_create_augroup("ts_imports", { clear = true }),
               --   callback = function()
@@ -281,6 +335,7 @@ return {
                 description = "Remove Unused Imports",
               },
             },
+            settings = opts.servers.ts_ls.settings,
           })
         end,
         ["lua_ls"] = function()
