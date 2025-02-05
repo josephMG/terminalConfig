@@ -44,7 +44,7 @@ return {
     },
     window = {
       mappings = {
-        ["<cr>"] = "open_tab_drop",
+        -- ["<cr>"] = "open_tab_drop",
         ["l"] = "open",
         ["h"] = "close_node",
         ["<space>"] = "none",

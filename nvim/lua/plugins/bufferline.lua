@@ -2,7 +2,9 @@ return {
   "akinsho/bufferline.nvim",
   version = "*",
   dependencies = "nvim-tree/nvim-web-devicons",
-  options = {},
+  options = {
+    -- mode = "tabs",
+  },
   diagnostics_indicator = function(count, level, diagnostics_dict, context)
     local s = " "
     for e, n in pairs(diagnostics_dict) do

@@ -211,7 +211,8 @@ return {
           keymap.set(
             "n",
             "gr",
-            "<cmd>lua require('telescope.builtin').lsp_references({ jump_type = 'tab', reuse_win = true })<CR>",
+            -- "<cmd>lua require('telescope.builtin').lsp_references({ jump_type = 'tab', reuse_win = true })<CR>",
+            "<cmd>lua require('telescope.builtin').lsp_references({ reuse_win = true })<CR>",
             opts
           ) -- show definition, references
 
@@ -223,7 +224,8 @@ return {
           keymap.set(
             "n",
             "gd",
-            "<cmd>lua require('telescope.builtin').lsp_definitions({ jump_type = 'tab', reuse_win = true })<CR>",
+            -- "<cmd>lua require('telescope.builtin').lsp_definitions({ jump_type = 'tab', reuse_win = true })<CR>",
+            "<cmd>lua require('telescope.builtin').lsp_definitions({ reuse_win = true })<CR>",
             opts
           ) -- show lsp definitions
 
@@ -232,7 +234,8 @@ return {
           keymap.set(
             "n",
             "gi",
-            "<cmd>lua require('telescope.builtin').lsp_implementations({ jump_type = 'tab', reuse_win = true })<CR>",
+            -- "<cmd>lua require('telescope.builtin').lsp_implementations({ jump_type = 'tab', reuse_win = true })<CR>",
+            "<cmd>lua require('telescope.builtin').lsp_implementations({ reuse_win = true })<CR>",
             opts
           ) -- show lsp implementations
 
@@ -241,7 +244,8 @@ return {
           keymap.set(
             "n",
             "gt",
-            "<cmd>lua require('telescope.builtin').lsp_type_definitions({ jump_type = 'tab', reuse_win = true })<CR>",
+            -- "<cmd>lua require('telescope.builtin').lsp_type_definitions({ jump_type = 'tab', reuse_win = true })<CR>",
+            "<cmd>lua require('telescope.builtin').lsp_type_definitions({ reuse_win = true })<CR>",
             opts
           ) -- show lsp type definitions
 
