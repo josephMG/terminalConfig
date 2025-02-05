@@ -1,6 +1,6 @@
 return {
   {
-    "hrsh7th/cmp-nvim-lsp"
+    "hrsh7th/cmp-nvim-lsp",
   },
   {
     "L3MON4D3/LuaSnip",
@@ -9,17 +9,18 @@ return {
       "rafamadriz/friendly-snippets",
     },
     config = function(_, opts)
-      if opts then require("luasnip").config.setup(opts) end
-      vim.tbl_map(
-      function(type) require("luasnip.loaders.from_" .. type).lazy_load() end,
-      { "vscode", "snipmate", "lua" }
-      )
+      if opts then
+        require("luasnip").config.setup(opts)
+      end
+      vim.tbl_map(function(type)
+        require("luasnip.loaders.from_" .. type).lazy_load()
+      end, { "vscode", "snipmate", "lua" })
       -- friendly-snippets - enable standardized comments snippets
       -- require("luasnip").filetype_extend("typescript", { "typescript" })
       -- require("luasnip").filetype_extend("typescript", { "typescriptreact" })
       -- require("luasnip").filetype_extend("typescript", { "html" })
       -- require("luasnip").filetype_extend("typescript", { "tsdoc" })
-      require("luasnip").filetype_extend("typescript", { "typescript", "typescriptreact", "html","tsdoc" })
+      require("luasnip").filetype_extend("typescript", { "typescript", "typescriptreact", "html", "tsdoc" })
       require("luasnip").filetype_extend("javascript", { "javascript", "javascriptreact", "html", "jsdoc" })
       require("luasnip").filetype_extend("lua", { "luadoc" })
       require("luasnip").filetype_extend("python", { "pydoc" })
@@ -40,7 +41,7 @@ return {
       vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
       local cmp = require("cmp")
       local luasnip = require("luasnip")
-      local lspkind = require('lspkind')
+      local lspkind = require("lspkind")
 
       require("luasnip.loaders.from_vscode").lazy_load()
 
@@ -69,7 +70,7 @@ return {
             cmp.abort()
             fallback()
           end,
-          ['<CR>'] = cmp.mapping(function(fallback)
+          ["<CR>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               if luasnip.expandable() then
                 luasnip.expand()
@@ -102,10 +103,10 @@ return {
               fallback()
             end
           end, { "i", "s" }),
-          ['<C-u>'] = cmp.mapping(function() 
+          ["<C-u>"] = cmp.mapping(function()
             cmp.scroll_docs(-4)
           end, { "i", "s" }),
-          ['<C-d>'] = cmp.mapping(function()
+          ["<C-d>"] = cmp.mapping(function()
             cmp.scroll_docs(4)
           end, { "i", "s" }),
         }),

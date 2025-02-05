@@ -4,15 +4,22 @@ return {
   lazy = false,
   version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
   opts = {
-    -- add any opts here
-    -- for example
-    provider = "groq",
+    -- provider = "groq",
+    -- vendors = {
+    --   groq = {
+    --     __inherited_from = "openai",
+    --     api_key_name = "GROQ_API_KEY",
+    --     endpoint = "https://api.groq.com/openai/v1/",
+    --     model = "llama-3.1-70b-versatile",
+    --   },
+    -- },
+    provider = "ollama",
     vendors = {
-      groq = {
+      ollama = {
         __inherited_from = "openai",
-        api_key_name = "GROQ_API_KEY",
-        endpoint = "https://api.groq.com/openai/v1/",
-        model = "llama-3.1-70b-versatile",
+        api_key_name = "",
+        endpoint = "",
+        model = "codegemma",
       },
     },
   },
