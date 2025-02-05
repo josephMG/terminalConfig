@@ -1,7 +1,8 @@
 function LineNumberColors()
-  vim.api.nvim_set_hl(0, "LineNrAbove", { fg = "#51B3EC", bold = true })
-  vim.api.nvim_set_hl(0, "LineNr", { fg = "white", bold = true })
-  vim.api.nvim_set_hl(0, "LineNrBelow", { fg = "#FB508F", bold = true })
+  local colors = require("catppuccin.palettes").get_palette()
+  vim.api.nvim_set_hl(0, "LineNrAbove", { fg = colors.surface1, bold = true })
+  vim.api.nvim_set_hl(0, "LineNr", { fg = colors.pink, bold = true })
+  vim.api.nvim_set_hl(0, "LineNrBelow", { fg = colors.surface1, bold = true })
 end
 
 -- bufferline
@@ -10,6 +11,8 @@ require("bufferline").setup({})
 
 -- catppuccin colorscheme
 vim.cmd.colorscheme("catppuccin-mocha")
+-- LineNumberColors()
+
 -- lualine
 
 require("lualine").setup({

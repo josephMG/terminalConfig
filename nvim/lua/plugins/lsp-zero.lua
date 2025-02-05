@@ -205,25 +205,45 @@ return {
           keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
 
           opts.desc = "Show LSP references"
-          keymap.set("n", "gr", vim.lsp.buf.references, opts)
+          keymap.set("n", "gR", vim.lsp.buf.references, opts)
 
           opts.desc = "Show LSP references (Telescope)"
-          keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
+          keymap.set(
+            "n",
+            "gr",
+            "<cmd>lua require('telescope.builtin').lsp_references({ jump_type = 'tab', reuse_win = true })<CR>",
+            opts
+          ) -- show definition, references
 
           opts.desc = "Go to declaration"
           keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
 
           opts.desc = "Show LSP definitions"
-          keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-          -- keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts) -- show lsp definitions
+          -- keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+          keymap.set(
+            "n",
+            "gd",
+            "<cmd>lua require('telescope.builtin').lsp_definitions({ jump_type = 'tab', reuse_win = true })<CR>",
+            opts
+          ) -- show lsp definitions
 
           opts.desc = "Show LSP implementations"
-          keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-          -- keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts) -- show lsp implementations
+          -- keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+          keymap.set(
+            "n",
+            "gi",
+            "<cmd>lua require('telescope.builtin').lsp_implementations({ jump_type = 'tab', reuse_win = true })<CR>",
+            opts
+          ) -- show lsp implementations
 
           opts.desc = "Show LSP type definitions"
-          keymap.set("n", "gt", vim.lsp.buf.type_definition, opts) -- show lsp type definitions
-          -- keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts) -- show lsp type definitions
+          -- keymap.set("n", "gt", vim.lsp.buf.type_definition, opts) -- show lsp type definitions
+          keymap.set(
+            "n",
+            "gt",
+            "<cmd>lua require('telescope.builtin').lsp_type_definitions({ jump_type = 'tab', reuse_win = true })<CR>",
+            opts
+          ) -- show lsp type definitions
 
           opts.desc = "See available code actions"
           keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
