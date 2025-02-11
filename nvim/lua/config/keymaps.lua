@@ -9,8 +9,8 @@ vim.keymap.set({ "n", "v", "i" }, "<S-C-Left>", "<Home>", { remap = true, desc =
 -- vim.keymap.set({"n", "v", "i"}, "<C-Left>", "<Home>", { desc = "Move to end of line" })
 
 -- buffers
-vim.keymap.set("n", "<S-h>", "<cmd>bprevious<cr>", { desc = "Prev Buffer" })
-vim.keymap.set("n", "<S-l>", "<cmd>bnext<cr>", { desc = "Next Buffer" })
+vim.keymap.set("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev Buffer" })
+vim.keymap.set("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next Buffer" })
 vim.keymap.set("n", "<M-A-Left>", "<Cmd>BufferLineMovePrev<CR>")
 vim.keymap.set("n", "<M-A-Right>", "<Cmd>BufferLineMoveNext<CR>")
 vim.keymap.set("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })

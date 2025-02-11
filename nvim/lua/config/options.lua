@@ -18,7 +18,7 @@ vim.opt.list = true -- show tab characters and trailing whitespace
 vim.opt.ignorecase = true -- ignore case when searching
 vim.opt.smartcase = true -- unless capital letter in search
 
-vim.opt.hlsearch = false -- do not highlight all matches on previous search pattern
+vim.opt.hlsearch = true -- do not highlight all matches on previous search pattern
 vim.opt.incsearch = true -- incrementally highlight searches as you type
 
 vim.opt.termguicolors = true -- enable true color support
