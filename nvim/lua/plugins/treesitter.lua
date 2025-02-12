@@ -1,7 +1,7 @@
 return {
   "nvim-treesitter/nvim-treesitter",
-  event = { "BufReadPre", "BufNewFile" },
   build = ":TSUpdate",
+  -- enabled = false,
   dependencies = {
     "windwp/nvim-ts-autotag",
   },
@@ -25,6 +25,7 @@ return {
 
     -- configure treesitter
     treesitter.setup({ -- enable syntax highlighting
+      sync_install = false,
       highlight = {
         enable = true,
       },

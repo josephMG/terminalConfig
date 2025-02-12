@@ -206,11 +206,12 @@ printf "\033]0;%s@%s:%s\033\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(rails ruby autojump git zsh-syntax-highlighting zsh-autosuggestions)
-#plugins=(rails ruby autojump git zsh-syntax-highlighting)
 
 bindkey '\e[1~' beginning-of-line
 bindkey '\e[4~' end-of-line
+
+# You may need to manually set your language environment
+export LANG=en_US.UTF-8
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
@@ -238,8 +239,8 @@ setopt NO_NOMATCH
 #fpath=(${ASDF_DIR}/completions $fpath)
 #autoload -U +X bashcompinit && bashcompinit
 #autoload -Uz compinit && compinit
-autoload -Uz compinit && compinit
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+#autoload -Uz compinit && compinit
+#zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
 autoload -Uz bracketed-paste-magic
 zle -N bracketed-paste bracketed-paste-magic
@@ -258,4 +259,12 @@ command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
 
+. "$HOME/.asdf/asdf.sh"
+fpath=(${ASDF_DIR}/completions $fpath)
+
 alias vim=nvim
+
+export GROQ_API_KEY=""
+
+# eval "$(ulimit -n 1048576)"
+ulimit -n 1048576

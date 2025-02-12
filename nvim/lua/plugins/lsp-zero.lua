@@ -428,6 +428,7 @@ return {
       mason_lspconfig.setup({
         -- list of servers for mason to install
         ensure_installed = {
+          "eslint", -- js linter
           "ts_ls",
           "html",
           "cssls",
@@ -447,7 +448,6 @@ return {
           "isort", -- python formatter
           "black", -- python formatter
           "pylint", -- python linter
-          "eslint_d", -- js linter
         },
       })
     end,
