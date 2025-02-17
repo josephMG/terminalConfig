@@ -19,7 +19,8 @@ return {
         __inherited_from = "openai",
         api_key_name = "",
         endpoint = "",
-        model = "codegemma",
+        model = "gemma2:27b",
+        -- model = "codegemma"
       },
     },
   },

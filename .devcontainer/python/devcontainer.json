@@ -1,6 +1,7 @@
-
 {
   "name": "DevContainer Base template",
+  "runArgs": ["--name", "load_balancer_devcontainer"],
+  // "runArgs": ["--name", "${localEnv:USER}_devcontainer"],
 
   "build": {
     "dockerfile": "./Dockerfile",
@@ -28,9 +29,14 @@
     "ghcr.io/devcontainers/features/python:1": {},
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/duduribeiro/devcontainer-features/neovim:1": { "version": "nightly" }
-
+    "ghcr.io/duduribeiro/devcontainer-features/neovim:1": {
+      "version": "nightly"
+    }
   },
+
+  "mounts": [
+    "type=bind,source=${localEnv:HOME}/.config/nvim,target=/root/.config/nvim"
+  ],
 
   "overrideFeatureInstallOrder": [
     "ghcr.io/devcontainers/features/common-utils"
@@ -38,4 +44,3 @@
   "onCreateCommand": "/usr/bin/zsh ./.devcontainer/on-create.sh > ~/on-create.log",
   "postCreateCommand": "/usr/bin/zsh ./.devcontainer/post-create.sh > ~/post-create.log"
 }
-
