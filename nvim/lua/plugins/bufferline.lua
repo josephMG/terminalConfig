@@ -20,12 +20,12 @@ return {
   config = function(_, opts)
     vim.opt.termguicolors = true
     require("bufferline").setup(opts)
-    vim.api.nvim_create_autocmd("BufAdd", {
-      callback = function()
-        require("bufferline").sort_by(function(buf_a, buf_b)
-          return buf_a.id < buf_b.id
-        end)
-      end,
-    })
+    -- vim.api.nvim_create_autocmd("BufAdd", {
+    --   callback = function()
+    --     require("bufferline").sort_by(function(buf_a, buf_b)
+    --       return buf_a.id < buf_b.id
+    --     end)
+    --   end,
+    -- })
   end,
 }

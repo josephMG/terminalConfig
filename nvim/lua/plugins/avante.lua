@@ -4,24 +4,41 @@ return {
   lazy = false,
   version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
   opts = {
+
+    provider = "groq",
+    cursor_applying_provider = "groq",
+    behaviour = {
+      enable_cursor_planning_mode = true,
+    },
+    vendors = {
+      groq = {
+        __inherited_from = "openai",
+        api_key_name = "GROQ_API_KEY",
+        endpoint = "https://api.groq.com/openai/v1/",
+        model = "gemma2-9b-it",
+        -- max_tokens = 32768, -- remember to increase this value, otherwise it will stop generating halfway
+      },
+    },
+    -- debug = true,
     -- provider = "groq",
     -- vendors = {
     --   groq = {
     --     __inherited_from = "openai",
     --     api_key_name = "GROQ_API_KEY",
     --     endpoint = "https://api.groq.com/openai/v1/",
-    --     model = "llama-3.1-70b-versatile",
+    --     model = "deepseek-r1-distill-llama-70b",
     --   },
     -- },
-    provider = "ollama",
-    vendors = {
-      ollama = {
-        __inherited_from = "openai",
-        api_key_name = "",
-        endpoint = "",
-        model = "codegemma",
-      },
-    },
+    -- provider = "ollama",
+    -- vendors = {
+    --   ollama = {
+    --     __inherited_from = "openai",
+    --     api_key_name = "",
+    --     endpoint = "http://localhost:14434/v1",
+    --     model = "gemma2:27b",
+    --     disable_tools = true,
+    --   },
+    -- },
   },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
   build = "make",
@@ -30,6 +47,7 @@ return {
     "stevearc/dressing.nvim",
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
+    "nvim-treesitter/nvim-treesitter",
     --- The below dependencies are optional,
     "echasnovski/mini.pick", -- for file_selector provider mini.pick
     "nvim-telescope/telescope.nvim", -- for file_selector provider telescope

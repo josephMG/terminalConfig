@@ -4,6 +4,9 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { noremap = true, silent = true, desc = "Move block up 1 line" })
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { noremap = true, silent = true, desc = "Move block down 2 lines" })
+
 vim.keymap.set({ "n", "v", "i" }, "<S-C-Right>", "<End>", { remap = true, desc = "Move to end of line" })
 vim.keymap.set({ "n", "v", "i" }, "<S-C-Left>", "<Home>", { remap = true, desc = "Move to start of line" })
 -- vim.keymap.set({"n", "v", "i"}, "<C-Left>", "<Home>", { desc = "Move to end of line" })
@@ -52,3 +55,28 @@ local function close_buffer()
 end
 vim.keymap.set({ "n", "i" }, "<C-s>", "<ESC>:w<CR>")
 vim.keymap.set({ "n", "i" }, "<C-x>", close_buffer) -- close buffer or quit
+
+vim.keymap.set(
+  { "n" },
+  "<c-up>",
+  "<cmd>resize -5<CR>",
+  { silent = true, remap = true, desc = "Decrease Window Height" }
+)
+vim.keymap.set(
+  { "n" },
+  "<c-down>",
+  "<cmd>resize +5<CR>",
+  { silent = true, remap = true, desc = "Increase Window Height" }
+)
+vim.keymap.set(
+  { "n" },
+  "<C-Left>",
+  "<cmd>vertical resize -2<cr>",
+  { silent = true, remap = true, desc = "Decrease Window Width" }
+)
+vim.keymap.set(
+  { "n" },
+  "<C-Right>",
+  "<cmd>vertical resize +2<cr>",
+  { silent = true, remap = true, desc = "Increase Window Width" }
+)
