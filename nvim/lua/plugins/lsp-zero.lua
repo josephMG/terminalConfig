@@ -267,11 +267,11 @@ return {
           opts.desc = "Go to next diagnostic"
           keymap.set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
 
-          opts.desc = "Show documentation for what is under cursor"
-          keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
-
           opts.desc = "Restart LSP"
           keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
+
+          opts.desc = "Show documentation for what is under cursor"
+          keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
         end,
       })
 
@@ -285,6 +285,26 @@ return {
         local hl = "DiagnosticSign" .. type
         vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
       end
+
+      vim.cmd([[autocmd! ColorScheme * highlight NormalFloat guibg=#1f2335]])
+      vim.cmd([[autocmd! ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335]])
+
+      local border = {
+        { "🭽", "FloatBorder" },
+        { "▔", "FloatBorder" },
+        { "🭾", "FloatBorder" },
+        { "▕", "FloatBorder" },
+        { "🭿", "FloatBorder" },
+        { "▁", "FloatBorder" },
+        { "🭼", "FloatBorder" },
+        { "▏", "FloatBorder" },
+      }
+
+      -- LSP settings (for overriding per client)
+      local handlers = {
+        ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = border }),
+        ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = border }),
+      }
 
       mason_lspconfig.setup_handlers({
         -- this first function is the "default handler"
@@ -323,7 +343,9 @@ return {
               "typescriptreact",
               "typescript.tsx",
             },
+            handlers = handlers,
             capabilities = capabilities,
+            settings = opts.servers.ts_ls.settings,
             on_attach = function(client, bufnr)
               if vim.lsp.codelens then
                 if client.supports_method("textDocument/codeLens") then
@@ -359,13 +381,13 @@ return {
                 description = "Remove Unused Imports",
               },
             },
-            settings = opts.servers.ts_ls.settings,
           })
         end,
         ["lua_ls"] = function()
           local lspconfig = require("lspconfig")
           lspconfig.lua_ls.setup({
             capabilities = capabilities,
+            handlers = handlers,
             settings = {
               Lua = {
                 diagnostics = {

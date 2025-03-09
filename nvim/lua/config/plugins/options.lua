@@ -7,5 +7,4 @@ end
 
 -- catppuccin colorscheme
 vim.cmd.colorscheme("catppuccin-mocha")
-
 -- LineNumberColors()
