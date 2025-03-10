@@ -14,12 +14,12 @@ return {
       desc = "Buffer Diagnostics (Trouble)",
     },
     {
-      "<leader>cs",
+      "<leader>xcs",
       "<cmd>Trouble symbols toggle focus=false<cr>",
       desc = "Symbols (Trouble)",
     },
     {
-      "<leader>cl",
+      "<leader>xcl",
       "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
       desc = "LSP Definitions / references / ... (Trouble)",
     },
@@ -34,4 +34,18 @@ return {
       desc = "Quickfix List (Trouble)",
     },
   },
+  config = function()
+    local wk = require("which-key")
+    wk.add({
+      {
+        -- { "<leader>x", group = "Trouble" }, -- group
+        { "<leader>xx", desc = "Diagnostics (Trouble)" },
+        { "<leader>xX", desc = "Buffer Diagnostics (Trouble)" },
+        { "<leader>xcs", desc = "Symbols (Trouble)" },
+        { "<leader>xcl", desc = "LSP Definitions / references / ... (Trouble)" },
+        { "<leader>xL", desc = "Location List (Trouble)" },
+        { "<leader>xQ", desc = "Quickfix List (Trouble)" },
+      },
+    })
+  end,
 }

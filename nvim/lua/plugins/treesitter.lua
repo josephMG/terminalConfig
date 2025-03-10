@@ -54,11 +54,27 @@ return {
       incremental_selection = {
         enable = true,
         keymaps = {
-          init_selection = "<C-space>",
-          node_incremental = "<C-space>",
-          scope_incremental = false,
-          node_decremental = "<bs>",
+          init_selection = "gnn", -- set to `false` to disable one of the mappings
+          node_incremental = "grn",
+          scope_incremental = "grc",
+          node_decremental = "grm",
         },
+      },
+    })
+
+    local wk = require("which-key")
+    wk.add({
+      {
+        mode = "n",
+        { "gn", group = "TreeSitter" }, -- group
+        { "gnn", desc = "TreeSitter init selection" },
+      },
+      {
+        mode = "v",
+        { "gr", group = "TreeSitter Selection" }, -- group
+        { "grn", desc = "TreeSitter node incremental" },
+        { "grc", desc = "TreeSitter scope incremental" },
+        { "grm", desc = "TreeSitter node decremental" },
       },
     })
   end,
