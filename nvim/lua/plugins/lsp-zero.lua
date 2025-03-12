@@ -469,14 +469,14 @@ return {
           "isort", -- python formatter
           "black", -- python formatter
           "pylint", -- python linter
-          "eslint", -- js linter
+          "eslint_d", -- js linter
         },
       })
     end,
   },
 
   -- Autocompletion
-  -- { "hrsh7th/nvim-cmp" },
+  { "hrsh7th/nvim-cmp" },
   { "hrsh7th/cmp-buffer" },
   { "hrsh7th/cmp-path" },
   { "saadparwaiz1/cmp_luasnip" },
