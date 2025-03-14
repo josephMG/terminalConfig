@@ -1,4 +1,4 @@
--- Keymaps are automatically loaded on the VeryLazy event
+-- keymaps are automatically loaded on the verylazy event
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 vim.g.mapleader = " "
@@ -14,8 +14,8 @@ vim.keymap.set({ "n", "v", "i" }, "<S-C-Left>", "<Home>", { remap = true, desc =
 -- buffers
 vim.keymap.set("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev Buffer" })
 vim.keymap.set("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next Buffer" })
-vim.keymap.set("n", "<M-A-Left>", "<Cmd>BufferLineMovePrev<CR>")
-vim.keymap.set("n", "<M-A-Right>", "<Cmd>BufferLineMoveNext<CR>")
+vim.keymap.set("n", "<M-Left>", "<Cmd>BufferLineMovePrev<CR>")
+vim.keymap.set("n", "<M-Right>", "<Cmd>BufferLineMoveNext<CR>")
 vim.keymap.set("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 vim.keymap.set("n", "<leader>`", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 vim.keymap.set("n", "<leader>bd", function()
@@ -58,25 +58,25 @@ vim.keymap.set({ "n", "i" }, "<C-x>", close_buffer) -- close buffer or quit
 
 vim.keymap.set(
   { "n" },
-  "<c-up>",
-  "<cmd>resize -5<CR>",
+  "<C-M-Up>",
+  "<cmd>resize -5<cr>",
   { silent = true, remap = true, desc = "Decrease Window Height" }
 )
 vim.keymap.set(
   { "n" },
-  "<c-down>",
-  "<cmd>resize +5<CR>",
+  "<C-M-Down>",
+  "<cmd>resize +5<cr>",
   { silent = true, remap = true, desc = "Increase Window Height" }
 )
 vim.keymap.set(
   { "n" },
-  "<C-Left>",
+  "<C-M-Left>",
   "<cmd>vertical resize -2<cr>",
   { silent = true, remap = true, desc = "Decrease Window Width" }
 )
 vim.keymap.set(
   { "n" },
-  "<C-Right>",
+  "<C-M-Right>",
   "<cmd>vertical resize +2<cr>",
   { silent = true, remap = true, desc = "Increase Window Width" }
 )
