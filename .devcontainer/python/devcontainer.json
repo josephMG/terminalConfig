@@ -35,7 +35,8 @@
   },
 
   "mounts": [
-    "type=bind,source=${localEnv:HOME}/.config/nvim,target=/root/.config/nvim"
+    "type=bind,source=${localEnv:HOME}/.config/nvim,target=/root/.config/nvim",
+    "type=bind,source=${localEnv:HOME}/.gitignore,target=/root/.gitignore"
   ],
 
   "overrideFeatureInstallOrder": [
