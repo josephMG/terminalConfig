@@ -34,7 +34,8 @@ return {
       desc = "Quickfix List (Trouble)",
     },
   },
-  config = function()
+  config = function(opts)
+    require("trouble").setup(opts)
     local wk = require("which-key")
     wk.add({
       {

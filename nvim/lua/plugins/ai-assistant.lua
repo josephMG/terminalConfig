@@ -32,7 +32,8 @@ return {
       -- },
       provider = "ollama",
       ollama = {
-        endpoint = "http://127.0.0.1:11434",
+        -- endpoint = "http://127.0.0.1:11434",
+        endpoint = "http://host.docker.internal:11434",
         model = "deepseek-r1:8b",
         disable_tools = true,
         -- parse_curl_args = function(opts, code_opts)
