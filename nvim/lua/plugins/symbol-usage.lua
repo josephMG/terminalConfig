@@ -65,15 +65,79 @@ return {
       return res
     end
 
+    local filter_js_vars = {
+      function(data)
+        local symbol, _, bufnr = data.symbol, data.parent, data.bufnr
+        if not vim.api.nvim_buf_is_loaded(bufnr) then
+          return
+        end
+        if is_ts(bufnr) then
+          local pos = { symbol.range.start.line, symbol.range.start.character }
+          -- Treesitter may still lose buffer context
+          local ok, node = pcall(vim.treesitter.get_node, { bufrn = bufnr, pos = pos })
+          if (ok and node) and node:type() == "identifier" and node:parent():type() == "variable_declarator" then
+            local value = node:parent():field("value")[1]
+            return vim.tbl_contains({ "arrow_function", "function" }, value and value:type() or "")
+          end
+          return false
+        else
+          -- Fallback to check if treesitter is not attached
+          local ln = symbol.range.start.line
+          local text = vim.api.nvim_buf_get_lines(bufnr, ln, ln + 1, true)[1] or ""
+          return text:find("function") or text:find("=>")
+        end
+      end,
+    }
+
     local SymbolKind = vim.lsp.protocol.SymbolKind
-    local kinds = SymbolKind
 
     require("symbol-usage").setup({
       text_format = text_format,
-      kinds = kinds,
+      kinds = {
+        SymbolKind.File,
+        SymbolKind.Module,
+        SymbolKind.Namespace,
+        SymbolKind.Package,
+        SymbolKind.Class,
+        SymbolKind.Method,
+        SymbolKind.Property,
+        SymbolKind.Field,
+        SymbolKind.Constructor,
+        SymbolKind.Enum,
+        SymbolKind.Interface,
+        SymbolKind.Function,
+        SymbolKind.Variable,
+        SymbolKind.Constant,
+        SymbolKind.String,
+        SymbolKind.Number,
+        SymbolKind.Boolean,
+        SymbolKind.Array,
+        SymbolKind.Object,
+        SymbolKind.Key,
+        SymbolKind.Null,
+        SymbolKind.EnumMember,
+        SymbolKind.Struct,
+        SymbolKind.Event,
+        SymbolKind.Operator,
+        SymbolKind.TypeParameter,
+      },
+      kinds_filter = {
+        [SymbolKind.Variable] = filter_js_vars,
+        [SymbolKind.Constant] = filter_js_vars,
+        [SymbolKind.Function] = {
+          function(data)
+            -- If an anonymous function has been passed as an argument, its name contains `() callback` in it
+            if data.symbol.name:find("() callback") then
+              return false
+            end
+            return true
+          end,
+        },
+      },
       references = { enabled = true, include_declaration = true },
       definition = { enabled = true },
       implementation = { enabled = true },
+      symbol_request_pos = "start",
     })
   end,
 }

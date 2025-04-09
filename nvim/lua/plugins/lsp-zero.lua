@@ -11,9 +11,6 @@ return {
       { "williamboman/mason-lspconfig.nvim" },
     },
     opts = {
-      codelens = {
-        enabled = true,
-      },
       -- make sure mason installs the server
       servers = {
         pyright = {},
@@ -27,12 +24,9 @@ return {
         --- @deprecated -- tsserver renamed to ts_ls but not yet released, so keep this for now
         --- the proper approach is to check the nvim-lspconfig release version when it's released to determine the server name dynamically
         tsserver = {
-          enabled = true,
+          enabled = false,
         },
         ts_ls = {
-          codelens = {
-            enabled = true,
-          },
           enabled = true,
           -- explicitly add default filetypes, so that we can extend
           -- them in related extras
@@ -45,16 +39,10 @@ return {
             "typescript.tsx",
           },
           settings = {
-            codelens = {
-              enabled = true,
-            },
             suggest = {
               completeFunctionCalls = true,
             },
             typescript = {
-              codelens = {
-                enabled = true,
-              },
               implementationsCodeLens = { enabled = true },
               referencesCodeLens = { enabled = true, showOnAllFunctions = true },
               updateImportsOnFileMove = { enabled = "always" },
@@ -347,16 +335,16 @@ return {
             capabilities = capabilities,
             settings = opts.servers.ts_ls.settings,
             on_attach = function(client, bufnr)
-              if vim.lsp.codelens then
-                if client.supports_method("textDocument/codeLens") then
-                  vim.lsp.codelens.refresh()
-                  --- autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
-                  vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-                    buffer = bufnr,
-                    callback = vim.lsp.codelens.refresh,
-                  })
-                end
-              end
+              -- if vim.lsp.codelens then
+              --   if client.supports_method("textDocument/codeLens") then
+              --     vim.lsp.codelens.refresh()
+              --     --- autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
+              --     vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+              --       buffer = bufnr,
+              --       callback = vim.lsp.codelens.refresh,
+              --     })
+              --   end
+              -- end
               -- vim.api.nvim_create_autocmd("BufWritePre", {
               --   group = vim.api.nvim_create_augroup("ts_imports", { clear = true }),
               --   callback = function()
