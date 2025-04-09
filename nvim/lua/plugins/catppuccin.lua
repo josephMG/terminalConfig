@@ -10,6 +10,7 @@ return {
           NvimTreeNormal = { fg = colors.none },
           CmpBorder = { fg = "#3e4145" },
           CursorLineNr = { fg = colors.yellow },
+          WinSeparator = { fg = colors.teal, style = { "bold" } },
         }
       end,
       mocha = function(mocha)
