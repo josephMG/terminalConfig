@@ -9,68 +9,27 @@ return {
     opts = {
       debug = true,
       cursor_applying_provider = "ollama",
+      auto_suggestion_provider = "ollama",
+      -- cursor_applying_provider = "groq",
       behaviour = {
         enable_cursor_planning_mode = true,
       },
-      -- provider = "groq",
-      -- cursor_applying_provider = "groq",
-      -- vendors = {
-      --   groq = {
-      --     __inherited_from = "openai",
-      --     api_key_name = "GROQ_API_KEY",
-      --     endpoint = "https://api.groq.com/openai/v1/",
-      --     model = "gemma2-9b-it",
-      --     max_tokens = 32768, -- remember to increase this value, otherwise it will stop generating halfway
-      --   },
-      -- },
-      -- vendors = {
-      --   groq = {
-      --     __inherited_from = "openai",
-      --     api_key_name = "GROQ_API_KEY",
-      --     endpoint = "https://api.groq.com/openai/v1/",
-      --     model = "deepseek-r1-distill-llama-70b",
-      --   },
-      -- },
       provider = "ollama",
       ollama = {
         -- endpoint = "http://127.0.0.1:11434",
         endpoint = "http://host.docker.internal:11434",
         model = "gemma3:4b",
         disable_tools = true,
-        -- parse_curl_args = function(opts, code_opts)
-        --   return {
-        --     url = opts.endpoint .. "/chat",
-        --     headers = {
-        --       ["Accept"] = "application/json",
-        --       ["Content-Type"] = "application/json",
-        --     },
-        --     body = {
-        --       model = opts.model,
-        --       options = {
-        --         num_ctx = 16384,
-        --       },
-        --       messages = require("avante.providers").copilot.parse_messages(code_opts), -- you can make your own message, but this is very advanced
-        --       stream = true,
-        --     },
-        --   }
-        -- end,
-        -- parse_stream_data = function(data, handler_opts)
-        --   -- Parse the JSON data
-        --   local json_data = vim.fn.json_decode(data)
-        --   -- Check for stream completion marker first
-        --   if json_data and json_data.done then
-        --     -- handler_opts.on_complete(nil) -- Properly terminate the stream
-        --     handler_opts.on_stop({ reason = json_data.done_reason or "stop" })
-        --     return
-        --   end
-        --   -- Process normal message content
-        --   if json_data and json_data.message and json_data.message.content then
-        --     -- Extract the content from the message
-        --     local content = json_data.message.content
-        --     -- Call the handler with the content
-        --     handler_opts.on_chunk(content)
-        --   end
-        -- end,
+      },
+      vendors = {
+        groq = {
+          -- https://console.groq.com/docs/models
+          __inherited_from = "openai",
+          api_key_name = "GROQ_API_KEY",
+          endpoint = "https://api.groq.com/openai/v1/",
+          model = "meta-llama/llama-4-scout-17b-16e-instruct",
+          max_tokens = 8192, -- remember to increase this value, otherwise it will stop generating halfway
+        },
       },
     },
     -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
