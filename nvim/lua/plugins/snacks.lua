@@ -5,7 +5,9 @@ return {
   lazy = false,
   ---@type snacks.Config
   opts = {
-
+    gitbrowse = {
+      branch = "master",
+    },
     bigfile = { enabled = true },
     indent = {
       enabled = true,
