@@ -5,8 +5,9 @@ return {
   opts = {
     -- mode = "tabs",
     options = {
-      sort_by = "insert_at_end",
+      sort_by = "insert_after_current",
       numbers = "both",
+      diagnostics = "nvim_lsp",
       diagnostics_indicator = function(count, level, diagnostics_dict, context)
         local s = " "
         for e, n in pairs(diagnostics_dict) do
