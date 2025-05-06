@@ -20,6 +20,7 @@ return {
           },
           schema = {
             model = {
+              -- default = "qwen3:4b",
               default = "gemma3:4b",
             },
             num_ctx = {

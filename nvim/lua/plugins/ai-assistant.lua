@@ -18,6 +18,7 @@ return {
       ollama = {
         -- endpoint = "http://127.0.0.1:11434",
         endpoint = "http://host.docker.internal:11434",
+        -- model = "qwen3:4b",
         model = "gemma3:4b",
         disable_tools = true,
       },
@@ -93,6 +94,7 @@ return {
             chat = true,
             command = true,
             model = {
+              -- model = "qwen3:4b",
               model = "gemma3:4b",
             },
             system_prompt = "I am an AI meticulously crafted to provide programming guidance and code assistance. "
