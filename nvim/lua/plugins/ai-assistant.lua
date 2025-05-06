@@ -93,7 +93,7 @@ return {
             chat = true,
             command = true,
             model = {
-              model = "deepseek-r1:8b",
+              model = "gemma3:4b",
             },
             system_prompt = "I am an AI meticulously crafted to provide programming guidance and code assistance. "
               .. "To best serve you as a computer programmer, please provide detailed inquiries and code snippets when necessary, "
@@ -153,6 +153,14 @@ return {
             local agent = gp.get_command_agent()
             gp.logger.info("Updating React SVG: " .. agent.name)
             gp.Prompt(params, gp.Target.rewrite, agent, template, nil)
+          end,
+          Translator = function(gp, params)
+            local chat_system_prompt = "You are a Translator, please translate between English and Chinese."
+            gp.cmd.ChatNew(params, chat_system_prompt)
+
+            -- -- you can also create a chat with a specific fixed agent like this:
+            -- local agent = gp.get_chat_agent("ChatGPT4o")
+            -- gp.cmd.ChatNew(params, chat_system_prompt, agent)
           end,
         },
       }
