@@ -182,86 +182,83 @@ return {
 
       -- LspAttach is where you enable features that only work
       -- if there is a language server active in the file
-      vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-        callback = function(ev)
-          local keymap = vim.keymap
-          -- Buffer local mappings.
-          -- See `:help vim.lsp.*` for documentation on any of the below functions
-          local opts = { buffer = ev.buf, silent = true }
-          -- set keybinds
-          keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
+      local function on_attach(ev)
+        local keymap = vim.keymap
+        -- Buffer local mappings.
+        -- See `:help vim.lsp.*` for documentation on any of the below functions
+        local opts = { buffer = ev.buf, silent = true }
+        -- set keybinds
+        keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
 
-          opts.desc = "Show LSP references"
-          keymap.set("n", "gR", vim.lsp.buf.references, opts)
+        opts.desc = "Show LSP references"
+        keymap.set("n", "gR", vim.lsp.buf.references, opts)
 
-          opts.desc = "Show LSP references (Telescope)"
-          keymap.set(
-            "n",
-            "gr",
-            -- "<cmd>lua require('telescope.builtin').lsp_references({ jump_type = 'tab', reuse_win = true })<CR>",
-            "<cmd>lua require('telescope.builtin').lsp_references({ reuse_win = true })<CR>",
-            opts
-          ) -- show definition, references
+        opts.desc = "Show LSP references (Telescope)"
+        keymap.set(
+          "n",
+          "gr",
+          -- "<cmd>lua require('telescope.builtin').lsp_references({ jump_type = 'tab', reuse_win = true })<CR>",
+          "<cmd>lua require('telescope.builtin').lsp_references({ reuse_win = true })<CR>",
+          opts
+        ) -- show definition, references
 
-          opts.desc = "Go to declaration"
-          keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+        opts.desc = "Go to declaration"
+        keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
 
-          opts.desc = "Show LSP definitions"
-          -- keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-          keymap.set(
-            "n",
-            "gd",
-            -- "<cmd>lua require('telescope.builtin').lsp_definitions({ jump_type = 'tab', reuse_win = true })<CR>",
-            "<cmd>lua require('telescope.builtin').lsp_definitions({ reuse_win = true })<CR>",
-            opts
-          ) -- show lsp definitions
+        opts.desc = "Show LSP definitions"
+        -- keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+        keymap.set(
+          "n",
+          "gd",
+          -- "<cmd>lua require('telescope.builtin').lsp_definitions({ jump_type = 'tab', reuse_win = true })<CR>",
+          "<cmd>lua require('telescope.builtin').lsp_definitions({ reuse_win = true })<CR>",
+          opts
+        ) -- show lsp definitions
 
-          opts.desc = "Show LSP implementations"
-          -- keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-          keymap.set(
-            "n",
-            "gi",
-            -- "<cmd>lua require('telescope.builtin').lsp_implementations({ jump_type = 'tab', reuse_win = true })<CR>",
-            "<cmd>lua require('telescope.builtin').lsp_implementations({ reuse_win = true })<CR>",
-            opts
-          ) -- show lsp implementations
+        opts.desc = "Show LSP implementations"
+        -- keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+        keymap.set(
+          "n",
+          "gi",
+          -- "<cmd>lua require('telescope.builtin').lsp_implementations({ jump_type = 'tab', reuse_win = true })<CR>",
+          "<cmd>lua require('telescope.builtin').lsp_implementations({ reuse_win = true })<CR>",
+          opts
+        ) -- show lsp implementations
 
-          opts.desc = "Show LSP type definitions"
-          -- keymap.set("n", "gt", vim.lsp.buf.type_definition, opts) -- show lsp type definitions
-          keymap.set(
-            "n",
-            "gt",
-            -- "<cmd>lua require('telescope.builtin').lsp_type_definitions({ jump_type = 'tab', reuse_win = true })<CR>",
-            "<cmd>lua require('telescope.builtin').lsp_type_definitions({ reuse_win = true })<CR>",
-            opts
-          ) -- show lsp type definitions
+        opts.desc = "Show LSP type definitions"
+        -- keymap.set("n", "gt", vim.lsp.buf.type_definition, opts) -- show lsp type definitions
+        keymap.set(
+          "n",
+          "gt",
+          -- "<cmd>lua require('telescope.builtin').lsp_type_definitions({ jump_type = 'tab', reuse_win = true })<CR>",
+          "<cmd>lua require('telescope.builtin').lsp_type_definitions({ reuse_win = true })<CR>",
+          opts
+        ) -- show lsp type definitions
 
-          opts.desc = "See available code actions"
-          keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
+        opts.desc = "See available code actions"
+        keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
 
-          opts.desc = "Show buffer diagnostics"
-          keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
+        opts.desc = "Show buffer diagnostics"
+        keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
 
-          opts.desc = "Show line diagnostics"
-          keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
+        opts.desc = "Show line diagnostics"
+        keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
 
-          opts.desc = "Go to previous diagnostic"
-          keymap.set("n", "[d", vim.diagnostic.goto_prev, opts) -- jump to previous diagnostic in buffer
+        opts.desc = "Go to previous diagnostic"
+        keymap.set("n", "[d", vim.diagnostic.goto_prev, opts) -- jump to previous diagnostic in buffer
 
-          opts.desc = "Go to next diagnostic"
-          keymap.set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
+        opts.desc = "Go to next diagnostic"
+        keymap.set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
 
-          opts.desc = "Smart rename"
-          keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
+        opts.desc = "Smart rename"
+        keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
 
-          opts.desc = "Restart LSP"
-          keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
+        opts.desc = "Restart LSP"
+        keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
 
-          opts.desc = "Show documentation for what is under cursor"
-          keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
-        end,
-      })
+        opts.desc = "Show documentation for what is under cursor"
+        keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
+      end
 
       -- used to enable autocompletion (assign to every lsp server config)
       local capabilities = cmp_nvim_lsp.default_capabilities()
@@ -294,97 +291,60 @@ return {
         ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = border }),
       }
 
-      mason_lspconfig.setup_handlers({
-        -- this first function is the "default handler"
-        -- it applies to every language server without a "custom handler"
-        -- this function is run on first installation time
-        function(server_name)
-          require("lspconfig")[server_name].setup({
-            capabilities = capabilities,
-          })
-        end,
-        ["ts_ls"] = function()
-          local lspconfig = require("lspconfig")
-          local function organize_imports()
-            local params = {
-              command = "_typescript.organizeImports",
-              arguments = { vim.api.nvim_buf_get_name(0) },
-              title = "",
-            }
-            vim.lsp.buf.execute_command(params)
-          end
-          local function remove_unused_imports()
-            vim.lsp.buf.code_action({
-              apply = true,
-              context = {
-                only = { "source.removeUnusedImports.ts" },
-                diagnostics = {},
-              },
-            })
-          end
-          lspconfig.ts_ls.setup({
-            filetypes = {
-              "javascript",
-              "javascriptreact",
-              "javascript.jsx",
-              "typescript",
-              "typescriptreact",
-              "typescript.tsx",
+      -- local function organize_imports()
+      --   local params = {
+      --     command = "_typescript.organizeImports",
+      --     arguments = { vim.api.nvim_buf_get_name(0) },
+      --     title = "",
+      --   }
+      --   vim.lsp.buf.execute_command(params)
+      -- end
+      -- local function remove_unused_imports()
+      --   vim.lsp.buf.code_action({
+      --     apply = true,
+      --     context = {
+      --       only = { "source.removeUnusedImports.ts" },
+      --       diagnostics = {},
+      --     },
+      --   })
+      -- end
+
+      vim.lsp.config("ts_ls", {
+        capabilities = capabilities,
+        handlers = handlers,
+        on_attach = on_attach,
+        filetypes = {
+          "javascript",
+          "javascriptreact",
+          "javascript.jsx",
+          "typescript",
+          "typescriptreact",
+          "typescript.tsx",
+        },
+        settings = opts.servers.ts_ls.settings,
+
+        -- commands = {
+        --   OrganizeImports = {
+        --     organize_imports,
+        --     description = "Organize Imports",
+        --   },
+        --   RemoveUnusedImports = {
+        --     remove_unused_imports,
+        --     description = "Remove Unused Imports",
+        --   },
+        -- },
+      })
+      vim.lsp.config("lua_ls", {
+        capabilities = capabilities,
+        handlers = handlers,
+        on_attach = on_attach,
+        settings = {
+          Lua = {
+            diagnostics = {
+              globals = { "vim" },
             },
-            handlers = handlers,
-            capabilities = capabilities,
-            settings = opts.servers.ts_ls.settings,
-            on_attach = function(client, bufnr)
-              -- if vim.lsp.codelens then
-              --   if client.supports_method("textDocument/codeLens") then
-              --     vim.lsp.codelens.refresh()
-              --     --- autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
-              --     vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-              --       buffer = bufnr,
-              --       callback = vim.lsp.codelens.refresh,
-              --     })
-              --   end
-              -- end
-              -- vim.api.nvim_create_autocmd("BufWritePre", {
-              --   group = vim.api.nvim_create_augroup("ts_imports", { clear = true }),
-              --   callback = function()
-              --     vim.lsp.buf.code_action({
-              --       apply = true,
-              --       context = { only = { "source.addMissingImports.ts" }, diagnostics = {} },
-              --     })
-              --     vim.lsp.buf.code_action({
-              --       apply = true,
-              --       context = { only = { "source.removeUnused.ts" }, diagnostics = {} },
-              --     })
-              --   end,
-              -- })
-            end,
-            commands = {
-              OrganizeImports = {
-                organize_imports,
-                description = "Organize Imports",
-              },
-              RemoveUnusedImports = {
-                remove_unused_imports,
-                description = "Remove Unused Imports",
-              },
-            },
-          })
-        end,
-        ["lua_ls"] = function()
-          local lspconfig = require("lspconfig")
-          lspconfig.lua_ls.setup({
-            capabilities = capabilities,
-            handlers = handlers,
-            settings = {
-              Lua = {
-                diagnostics = {
-                  globals = { "vim" },
-                },
-              },
-            },
-          })
-        end,
+          },
+        },
       })
     end,
   },
