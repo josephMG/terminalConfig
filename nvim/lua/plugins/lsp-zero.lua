@@ -291,28 +291,37 @@ return {
         ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = border }),
       }
 
-      -- local function organize_imports()
-      --   local params = {
-      --     command = "_typescript.organizeImports",
-      --     arguments = { vim.api.nvim_buf_get_name(0) },
-      --     title = "",
-      --   }
-      --   vim.lsp.buf.execute_command(params)
-      -- end
-      -- local function remove_unused_imports()
-      --   vim.lsp.buf.code_action({
-      --     apply = true,
-      --     context = {
-      --       only = { "source.removeUnusedImports.ts" },
-      --       diagnostics = {},
-      --     },
-      --   })
-      -- end
+      local function organize_imports()
+        local params = {
+          command = "_typescript.organizeImports",
+          arguments = { vim.api.nvim_buf_get_name(0) },
+          title = "",
+        }
+        vim.lsp.buf.execute_command(params)
+      end
+      local function remove_unused_imports()
+        vim.lsp.buf.code_action({
+          apply = true,
+          context = {
+            only = { "source.removeUnusedImports.ts" },
+            diagnostics = {},
+          },
+        })
+      end
 
       vim.lsp.config("ts_ls", {
         capabilities = capabilities,
         handlers = handlers,
-        on_attach = on_attach,
+        on_attach = function(ev)
+          vim.api.nvim_create_user_command("OrganizeImports", function(cmd)
+            organize_imports()
+          end, { desc = "Organize Imports" })
+          vim.api.nvim_create_user_command("RemoveUnusedImports", function(cmd)
+            remove_unused_imports()
+          end, { desc = "Remove Unused Imports" })
+
+          on_attach(ev)
+        end,
         filetypes = {
           "javascript",
           "javascriptreact",
@@ -322,17 +331,6 @@ return {
           "typescript.tsx",
         },
         settings = opts.servers.ts_ls.settings,
-
-        -- commands = {
-        --   OrganizeImports = {
-        --     organize_imports,
-        --     description = "Organize Imports",
-        --   },
-        --   RemoveUnusedImports = {
-        --     remove_unused_imports,
-        --     description = "Remove Unused Imports",
-        --   },
-        -- },
       })
       vim.lsp.config("lua_ls", {
         capabilities = capabilities,
