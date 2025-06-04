@@ -247,8 +247,18 @@ return {
         opts.desc = "Go to previous diagnostic"
         keymap.set("n", "[d", vim.diagnostic.goto_prev, opts) -- jump to previous diagnostic in buffer
 
+        opts.desc = "Go to previous diagnostic (ERROR)"
+        keymap.set("n", "[D", function()
+          vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR, wrap = true })
+        end, opts) -- jump to previous diagnostic in buffer
+
         opts.desc = "Go to next diagnostic"
         keymap.set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
+
+        opts.desc = "Go to next diagnostic (ERROR)"
+        keymap.set("n", "]D", function()
+          vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR, wrap = true })
+        end, opts) -- jump to previous diagnostic in buffer
 
         opts.desc = "Smart rename"
         keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
