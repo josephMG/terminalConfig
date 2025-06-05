@@ -15,14 +15,19 @@ return {
         enable_cursor_planning_mode = true,
       },
       provider = "ollama",
-      ollama = {
-        -- endpoint = "http://127.0.0.1:11434",
-        endpoint = "http://host.docker.internal:11434",
-        -- model = "qwen3:4b",
-        model = "gemma3:4b",
-        disable_tools = true,
-      },
-      vendors = {
+      providers = {
+        ollama = {
+          -- endpoint = "http://127.0.0.1:11434",
+          endpoint = "http://host.docker.internal:11434",
+          -- model = "qwen3:4b",
+          model = "gemma3:4b",
+          -- disable_tools = true,
+          extra_request_body = {
+            options = {
+              think = false,
+            },
+          },
+        },
         groq = {
           -- https://console.groq.com/docs/models
           __inherited_from = "openai",
