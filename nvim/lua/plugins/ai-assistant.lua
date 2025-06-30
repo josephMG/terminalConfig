@@ -20,8 +20,9 @@ return {
           -- endpoint = "http://127.0.0.1:11434",
           endpoint = "http://host.docker.internal:11434",
           -- model = "qwen3:4b",
-          model = "gemma3:4b",
+          model = "deepseek-r1:8b",
           -- disable_tools = true,
+          -- mode = "legacy",
           extra_request_body = {
             options = {
               think = false,

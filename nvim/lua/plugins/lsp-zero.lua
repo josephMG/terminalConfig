@@ -1,14 +1,89 @@
 return {
+  -- Mason
+  {
+
+    "williamboman/mason.nvim",
+    dependencies = {
+      "williamboman/mason-lspconfig.nvim",
+      "WhoIsSethDaniel/mason-tool-installer.nvim",
+    },
+    lazy = false,
+    cmd = "Mason",
+    keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
+    build = ":MasonUpdate",
+    opts_extend = { "ensure_installed" },
+    opts = function(_, opts)
+      opts.ensure_installed = opts.ensure_installed or {
+        "stylua",
+        "shfmt",
+        "prettier",
+      }
+      table.insert(opts.ensure_installed, "js-debug-adapter")
+    end,
+    ---@param opts MasonSettings | {ensure_installed: string[]}
+    config = function(_, opts)
+      require("mason").setup(opts)
+      local mason_tool_installer = require("mason-tool-installer")
+      local mason_lspconfig = require("mason-lspconfig")
+      local mr = require("mason-registry")
+      mr:on("package:install:success", function()
+        vim.defer_fn(function()
+          -- trigger FileType event to possibly load this newly installed LSP server
+          require("lazy.core.handler.event").trigger({
+            event = "FileType",
+            buf = vim.api.nvim_get_current_buf(),
+          })
+        end, 100)
+      end)
+
+      mr.refresh(function()
+        for _, tool in ipairs(opts.ensure_installed) do
+          local p = mr.get_package(tool)
+          if not p:is_installed() then
+            p:install()
+          end
+        end
+      end)
+      -- import mason-lspconfig
+      mason_lspconfig.setup({
+        -- list of servers for mason to install
+        -- ensure_installed = {
+        -- },
+        -- auto-install configured servers (with lspconfig)
+        -- automatic_installation = true, -- not the same as ensure_installed
+      })
+
+      mason_tool_installer.setup({
+        ensure_installed = {
+          -- lsp
+          "ts_ls",
+          "html",
+          "cssls",
+          "tailwindcss",
+          "lua_ls",
+          "emmet_language_server",
+          "pyright",
+
+          -- formatter
+          "prettier", -- prettier formatter
+          "stylua",   -- lua formatter
+          "isort",    -- python formatter
+          "black",    -- python formatter
+          "pylint",   -- python linter
+          "eslint",   -- js linter
+        },
+      })
+    end,
+  },
 
   -- LSP
   {
     "neovim/nvim-lspconfig",
+    version = "*",
     cmd = { "LspInfo", "LspInstall", "LspStart" },
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
       { "hrsh7th/cmp-nvim-lsp" },
-      { "williamboman/mason.nvim" },
-      { "williamboman/mason-lspconfig.nvim" },
     },
     opts = {
       -- make sure mason installs the server
@@ -20,11 +95,6 @@ return {
               diagnostics = { "vim" },
             },
           },
-        },
-        --- @deprecated -- tsserver renamed to ts_ls but not yet released, so keep this for now
-        --- the proper approach is to check the nvim-lspconfig release version when it's released to determine the server name dynamically
-        tsserver = {
-          enabled = false,
         },
         ts_ls = {
           enabled = true,
@@ -43,6 +113,7 @@ return {
               completeFunctionCalls = true,
             },
             typescript = {
+              format = { enable = false },
               implementationsCodeLens = { enabled = true },
               referencesCodeLens = { enabled = true, showOnAllFunctions = true },
               updateImportsOnFileMove = { enabled = "always" },
@@ -59,6 +130,7 @@ return {
               },
             },
             javascript = {
+              format = { enable = false },
               implementationsCodeLens = { enabled = true },
               referencesCodeLens = { enabled = true, showOnAllFunctions = true },
               updateImportsOnFileMove = { enabled = "always" },
@@ -138,16 +210,10 @@ return {
         },
       },
       setup = {
-        --- @deprecated -- tsserver renamed to ts_ls but not yet released, so keep this for now
-        --- the proper approach is to check the nvim-lspconfig release version when it's released to determine the server name dynamically
-        tsserver = function()
-          -- disable tsserver
-          return true
-        end,
         ts_ls = function(_, opts)
           -- copy typescript settings to javascript
           opts.settings.javascript =
-            vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
+              vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
         end,
       },
     },
@@ -157,9 +223,103 @@ return {
       vim.opt.signcolumn = "yes"
     end,
     config = function(_, opts)
-      local lsp_defaults = require("lspconfig").util.default_config
-      local mason_lspconfig = require("mason-lspconfig")
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
+      local lspconfig = require("lspconfig")
+
+      -- Configure individual LSP servers
+      lspconfig.eslint.setup({
+        -- ESLint specific settings
+        settings = {
+          -- This is crucial for enabling auto-fix on save
+          ["eslint.autoFixOnSave"] = true,
+          ["eslint.probe"] = {
+            "javascript",
+            "javascriptreact",
+            "typescript",
+            "typescriptreact",
+            "vue",
+            "html",
+            "markdown",
+            "json",
+            "json5",
+            "jsonc",
+            "yaml",
+            "toml",
+            "xml",
+            "gql",
+            "graphql",
+            "astro",
+            "svelte",
+            "css",
+            "less",
+            "scss",
+            "pcss",
+            "postcss"
+          },
+          rulesCustomizations = {
+            { rule= "style/*", severity= "off", fixable= true },
+            { rule= "format/*", severity= "off", fixable= true },
+            { rule= "*-indent", severity= "off", fixable= true },
+            { rule= "*-spacing", severity= "off", fixable= true },
+            { rule= "*-spaces", severity= "off", fixable= true },
+            { rule= "*-order", severity= "off", fixable= true },
+            { rule= "*-dangle", severity= "off", fixable= true },
+            { rule= "*-newline", severity= "off", fixable= true },
+            { rule= "*quotes", severity= "off", fixable= true },
+            { rule= "*semi", severity= "off", fixable= true }
+          },
+          ["eslint.options"] = {
+            -- If you have a specific ESLint config file name, you can set it here
+            -- configFile = ".eslintrc.js"
+          },
+          ["eslint.validate"] = {
+            "javascript",
+            "javascriptreact",
+            "typescript",
+            "typescriptreact",
+            "vue",
+            "html",
+            "markdown",
+            "json",
+            "json5",
+            "jsonc",
+            "yaml",
+            "toml",
+            "xml",
+            "gql",
+            "graphql",
+            "astro",
+            "svelte",
+            "css",
+            "less",
+            "scss",
+            "pcss",
+            "postcss"
+          },
+          -- Path to your node_modules if needed (e.g., for global ESLint or specific project setup)
+          -- ["eslint.nodePath"] = vim.fn.expand("~/.nvm/versions/node/v20.11.1/bin/node"),
+        },
+        -- Filetypes where ESLint should be active
+        filetypes = {
+          "javascript",
+          "typescript",
+          "javascriptreact",
+          "typescriptreact",
+          "vue",
+          "html",
+          "json",
+          "jsonc",
+          "yaml",
+          "markdown",
+        },
+        -- Important: Enable formatting capabilities
+        on_init = function(client)
+          if client.name == 'eslint' then
+            client.server_capabilities.document_formatting = true
+            client.server_capabilities.document_range_formatting = true
+          end
+        end,
+      })
 
       -- Set which codelens text levels to show
       local original_set_virtual_text = vim.lsp.diagnostic.set_virtual_text
@@ -354,91 +514,150 @@ return {
           },
         },
       })
+
+      -- vim.lsp.config("eslint", {
+      --   capabilities = capabilities,
+      --   handlers = handlers,
+      --   on_attach = function(ev)
+      --     if ev.name == 'eslint' then
+      --       ev.server_capabilities.document_formatting = true
+      --       ev.server_capabilities.document_range_formatting = true
+      --     end
+      --     on_attach(ev)
+      --   end,
+      --   -- ESLint specific settings
+      --   settings = {
+      --     -- This is crucial for enabling auto-fix on save
+      --     ["eslint.autoFixOnSave"] = true,
+      --     ["eslint.probe"] = {
+      --       "javascript",
+      --       "javascriptreact",
+      --       "typescript",
+      --       "typescriptreact",
+      --       "vue",
+      --       "html",
+      --       "markdown",
+      --       "json",
+      --       "json5",
+      --       "jsonc",
+      --       "yaml",
+      --       "toml",
+      --       "xml",
+      --       "gql",
+      --       "graphql",
+      --       "astro",
+      --       "svelte",
+      --       "css",
+      --       "less",
+      --       "scss",
+      --       "pcss",
+      --       "postcss"
+      --     },
+      --     rulesCustomizations = {
+      --       { rule= "style/*", severity= "off", fixable= true },
+      --       { rule= "format/*", severity= "off", fixable= true },
+      --       { rule= "*-indent", severity= "off", fixable= true },
+      --       { rule= "*-spacing", severity= "off", fixable= true },
+      --       { rule= "*-spaces", severity= "off", fixable= true },
+      --       { rule= "*-order", severity= "off", fixable= true },
+      --       { rule= "*-dangle", severity= "off", fixable= true },
+      --       { rule= "*-newline", severity= "off", fixable= true },
+      --       { rule= "*quotes", severity= "off", fixable= true },
+      --       { rule= "*semi", severity= "off", fixable= true }
+      --
+      --     },
+      --     -- ["eslint.options"] = {
+      --     --   -- If you have a specific ESLint config file name, you can set it here
+      --     --   -- configFile = "eslint.config.js"
+      --     -- },
+      --     ["eslint.validate"] = {
+      --       "javascript",
+      --       "javascriptreact",
+      --       "typescript",
+      --       "typescriptreact",
+      --       "vue",
+      --       "html",
+      --       "markdown",
+      --       "json",
+      --       "json5",
+      --       "jsonc",
+      --       "yaml",
+      --       "toml",
+      --       "xml",
+      --       "gql",
+      --       "graphql",
+      --       "astro",
+      --       "svelte",
+      --       "css",
+      --       "less",
+      --       "scss",
+      --       "pcss",
+      --       "postcss"
+      --     },
+      --     -- Path to your node_modules if needed (e.g., for global ESLint or specific project setup)
+      --     -- ["eslint.nodePath"] = vim.fn.expand("~/.nvm/versions/node/v20.11.1/bin/node"),
+      --   },
+      --   -- Filetypes where ESLint should be active
+      --   filetypes = {
+      --     "javascript",
+      --     "typescript",
+      --     "javascriptreact",
+      --     "typescriptreact",
+      --     "vue",
+      --     "html",
+      --     "json",
+      --     "jsonc",
+      --     "yaml",
+      --     "markdown",
+      --   },
+      --   -- Important: Enable formatting capabilities
+      -- })
     end,
   },
 
-  -- Mason
+  -- General LSP keymaps and UI
   {
-
-    "williamboman/mason.nvim",
+    "VonHeikemen/lsp-zero.nvim", -- A wrapper around nvim-lspconfig and mason
     dependencies = {
-      "williamboman/mason-lspconfig.nvim",
-      "WhoIsSethDaniel/mason-tool-installer.nvim",
-    },
-    lazy = false,
-    cmd = "Mason",
-    keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
-    build = ":MasonUpdate",
-    opts_extend = { "ensure_installed" },
-    opts = function(_, opts)
-      opts.ensure_installed = opts.ensure_installed or {
-        "stylua",
-        "shfmt",
-        "prettier",
-      }
-      table.insert(opts.ensure_installed, "js-debug-adapter")
-    end,
-    ---@param opts MasonSettings | {ensure_installed: string[]}
-    config = function(_, opts)
-      require("mason").setup(opts)
-      local mason_tool_installer = require("mason-tool-installer")
-      local mason_lspconfig = require("mason-lspconfig")
-      local mr = require("mason-registry")
-      mr:on("package:install:success", function()
-        vim.defer_fn(function()
-          -- trigger FileType event to possibly load this newly installed LSP server
-          require("lazy.core.handler.event").trigger({
-            event = "FileType",
-            buf = vim.api.nvim_get_current_buf(),
-          })
-        end, 100)
-      end)
+      -- LSP Support
+      { "neovim/nvim-lspconfig" },
+      { "williamboman/mason.nvim" },
+      { "williamboman/mason-lspconfig.nvim" },
 
-      mr.refresh(function()
-        for _, tool in ipairs(opts.ensure_installed) do
-          local p = mr.get_package(tool)
-          if not p:is_installed() then
-            p:install()
-          end
+      -- Autocompletion
+      { "L3MON4D3/LuaSnip" },
+      { "hrsh7th/nvim-cmp" },
+      { "hrsh7th/cmp-buffer" },
+      { "hrsh7th/cmp-path" },
+      { "saadparwaiz1/cmp_luasnip" },
+      { "hrsh7th/cmp-nvim-lsp" },
+      { "hrsh7th/cmp-nvim-lua" },
+    },
+    config = function()
+      -- Use lsp-zero's recommended setup for keymaps, completion, etc.
+      local lsp_zero = require("lsp-zero")
+      lsp_zero.on_attach(function(client, bufnr)
+        lsp_zero.default_keymaps({ buffer = bufnr })
+
+        -- Optional: Setup keymap for code actions (including ESLint fixes)
+        vim.keymap.set("n", "<leader>ca", function()
+          vim.lsp.buf.code_action({ context = { only = { "quickfix", "source.fixAll" } }, apply = true })
+        end, { buffer = bufnr, desc = "LSP Code Action (Fix All)" })
+
+        -- Optional: Format on save for specific clients (if you don't rely on `autoFixOnSave` fully)
+        if client.name == "eslint" or client.name == "tsserver" then
+          -- vim.api.nvim_create_autocmd("BufWritePre", {
+          --   buffer = bufnr,
+          --   callback = function()
+          --     vim.lsp.buf.format({ async = false })
+          --   end,
+          -- })
         end
       end)
-      -- import mason-lspconfig
-      mason_lspconfig.setup({
-        -- list of servers for mason to install
-        -- ensure_installed = {
-        -- },
-        -- auto-install configured servers (with lspconfig)
-        -- automatic_installation = true, -- not the same as ensure_installed
-      })
 
-      mason_tool_installer.setup({
-        ensure_installed = {
-          -- lsp
-          "ts_ls",
-          "html",
-          "cssls",
-          "tailwindcss",
-          "lua_ls",
-          "emmet_language_server",
-          "pyright",
-
-          -- formatter
-          "prettier", -- prettier formatter
-          "stylua", -- lua formatter
-          "isort", -- python formatter
-          "black", -- python formatter
-          "pylint", -- python linter
-          "eslint", -- js linter
-        },
-      })
+      -- Add the server names that you would like lsp-zero to setup for you.
+      -- lsp_zero.setup_servers({ "eslint", "ts_ls", "jsonls", "html", "cssls" })
     end,
   },
 
-  -- Autocompletion
-  { "hrsh7th/nvim-cmp" },
-  { "hrsh7th/cmp-buffer" },
-  { "hrsh7th/cmp-path" },
-  { "saadparwaiz1/cmp_luasnip" },
-  { "hrsh7th/cmp-nvim-lsp" },
-  { "hrsh7th/cmp-nvim-lua" },
 }
