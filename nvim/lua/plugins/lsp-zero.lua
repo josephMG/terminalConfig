@@ -66,11 +66,11 @@ return {
 
           -- formatter
           "prettier", -- prettier formatter
-          "stylua",   -- lua formatter
-          "isort",    -- python formatter
-          "black",    -- python formatter
-          "pylint",   -- python linter
-          "eslint",   -- js linter
+          "stylua", -- lua formatter
+          "isort", -- python formatter
+          "black", -- python formatter
+          "pylint", -- python linter
+          "eslint", -- js linter
         },
       })
     end,
@@ -213,7 +213,7 @@ return {
         ts_ls = function(_, opts)
           -- copy typescript settings to javascript
           opts.settings.javascript =
-              vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
+            vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
         end,
       },
     },
@@ -254,19 +254,19 @@ return {
             "less",
             "scss",
             "pcss",
-            "postcss"
+            "postcss",
           },
           rulesCustomizations = {
-            { rule= "style/*", severity= "off", fixable= true },
-            { rule= "format/*", severity= "off", fixable= true },
-            { rule= "*-indent", severity= "off", fixable= true },
-            { rule= "*-spacing", severity= "off", fixable= true },
-            { rule= "*-spaces", severity= "off", fixable= true },
-            { rule= "*-order", severity= "off", fixable= true },
-            { rule= "*-dangle", severity= "off", fixable= true },
-            { rule= "*-newline", severity= "off", fixable= true },
-            { rule= "*quotes", severity= "off", fixable= true },
-            { rule= "*semi", severity= "off", fixable= true }
+            { rule = "style/*", severity = "off", fixable = true },
+            { rule = "format/*", severity = "off", fixable = true },
+            { rule = "*-indent", severity = "off", fixable = true },
+            { rule = "*-spacing", severity = "off", fixable = true },
+            { rule = "*-spaces", severity = "off", fixable = true },
+            { rule = "*-order", severity = "off", fixable = true },
+            { rule = "*-dangle", severity = "off", fixable = true },
+            { rule = "*-newline", severity = "off", fixable = true },
+            { rule = "*quotes", severity = "off", fixable = true },
+            { rule = "*semi", severity = "off", fixable = true },
           },
           ["eslint.options"] = {
             -- If you have a specific ESLint config file name, you can set it here
@@ -294,7 +294,7 @@ return {
             "less",
             "scss",
             "pcss",
-            "postcss"
+            "postcss",
           },
           -- Path to your node_modules if needed (e.g., for global ESLint or specific project setup)
           -- ["eslint.nodePath"] = vim.fn.expand("~/.nvm/versions/node/v20.11.1/bin/node"),
@@ -314,7 +314,7 @@ return {
         },
         -- Important: Enable formatting capabilities
         on_init = function(client)
-          if client.name == 'eslint' then
+          if client.name == "eslint" then
             client.server_capabilities.document_formatting = true
             client.server_capabilities.document_range_formatting = true
           end
@@ -482,13 +482,14 @@ return {
       vim.lsp.config("ts_ls", {
         capabilities = capabilities,
         handlers = handlers,
-        on_attach = function(ev)
+        on_attach = function(ev, buf)
           vim.api.nvim_create_user_command("OrganizeImports", function(cmd)
             organize_imports()
           end, { desc = "Organize Imports" })
           vim.api.nvim_create_user_command("RemoveUnusedImports", function(cmd)
             remove_unused_imports()
           end, { desc = "Remove Unused Imports" })
+          vim.keymap.set("n", "<leader>lf", ":EslintFixAll<CR>", { buffer = buf, desc = "Run EslintFixAll" }) -- show  diagnostics for file
 
           on_attach(ev)
         end,
@@ -659,5 +660,44 @@ return {
       -- lsp_zero.setup_servers({ "eslint", "ts_ls", "jsonls", "html", "cssls" })
     end,
   },
-
 }
+
+-- -- nvim-lint
+-- return {
+--   "mfussenegger/nvim-lint",
+--   enabled = false,
+--   event = {
+--     "BufReadPre",
+--     "BufNewFile",
+--   },
+--   config = function()
+--     local lint = require("lint")
+--
+--     lint.linters_by_ft = {
+--       javascript = { "eslint" },
+--       typescript = { "eslint" },
+--       javascriptreact = { "eslint" },
+--       typescriptreact = { "eslint" },
+--       svelte = { "eslint" },
+--       python = { "pylint" },
+--     }
+--
+--     lint.linters.pylint.cmd = "python"
+--     lint.linters.pylint.args = { "-m", "pylint", "-f", "json" }
+--     -- lint.linters.pylint.args = { "-m", "pylint", "-f", "json", "--from-stdin", function() return vim.api.nvim_buf_get_name(0) end, }
+--
+--     local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
+--
+--     vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave", "TextChanged" }, {
+--       group = lint_augroup,
+--       callback = function()
+--         lint.try_lint()
+--       end,
+--     })
+--
+--     vim.keymap.set("n", "<leader>lt", function()
+--       lint.try_lint()
+--     end, { desc = "Trigger linting for current file" })
+--     vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format, { desc = "Force linting for current file" })
+--   end,
+-- }
