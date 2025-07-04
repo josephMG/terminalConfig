@@ -36,6 +36,9 @@ return {
         -- wo = { wrap = true } -- Wrap notifications
       },
     },
+    -- explorer = {
+    --   replace_netrw = true,
+    -- },
     dashboard = {
       preset = {
         pick = nil,
@@ -56,14 +59,21 @@ return {
   },
   keys = {
     {
-      "<leader>z",
+      "<leader>zz",
       function()
         Snacks.zen()
       end,
       desc = "Toggle Zen Mode",
     },
     {
-      "<leader>Z",
+      "<leader>zD",
+      function()
+        Snacks.dashboard.open()
+      end,
+      desc = "Toggle Dashboard",
+    },
+    {
+      "<leader>zZ",
       function()
         Snacks.zen.zoom()
       end,
