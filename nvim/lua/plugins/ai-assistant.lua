@@ -14,8 +14,16 @@ return {
       behaviour = {
         enable_cursor_planning_mode = true,
       },
-      provider = "ollama",
+      provider = "gemini",
+
       providers = {
+        gemini = {
+          api_key_name = "GEMINI_API_KEY",
+          model = "gemini-2.5-pro-preview-03-25",
+          timeout = 30000, -- Timeout in milliseconds
+          temperature = 0,
+          -- max_tokens = 8192,
+        },
         ollama = {
           -- endpoint = "http://127.0.0.1:11434",
           endpoint = "http://host.docker.internal:11434",
