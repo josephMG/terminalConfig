@@ -8,6 +8,7 @@ return {
       "WhoIsSethDaniel/mason-tool-installer.nvim",
     },
     lazy = false,
+    -- enabled = false,
     cmd = "Mason",
     keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
     build = ":MasonUpdate",
@@ -82,6 +83,7 @@ return {
     version = "*",
     cmd = { "LspInfo", "LspInstall", "LspStart" },
     event = { "BufReadPre", "BufNewFile" },
+    -- enabled = false,
     dependencies = {
       { "hrsh7th/cmp-nvim-lsp" },
     },
@@ -435,11 +437,22 @@ return {
 
       -- Change the Diagnostic symbols in the sign column (gutter)
       -- (not in youtube nvim video)
-      local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
-      for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-      end
+      vim.diagnostic.config({
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = " ",
+            [vim.diagnostic.severity.WARN] = " ",
+            [vim.diagnostic.severity.INFO] = " ",
+            [vim.diagnostic.severity.HINT] = "󰠠 ",
+          },
+          numhl = {
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.HINT] = "",
+            [vim.diagnostic.severity.INFO] = "",
+          },
+        },
+      })
 
       vim.cmd([[autocmd! ColorScheme * highlight NormalFloat guibg=#1f2335]])
       vim.cmd([[autocmd! ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335]])
@@ -482,7 +495,9 @@ return {
       vim.lsp.config("ts_ls", {
         capabilities = capabilities,
         handlers = handlers,
-        on_attach = function(ev, buf)
+        on_attach = function(client)
+          -- Don't override colorscheme catppuccin
+          client.server_capabilities.semanticTokensProvider = nil
           vim.api.nvim_create_user_command("OrganizeImports", function(cmd)
             organize_imports()
           end, { desc = "Organize Imports" })
@@ -491,7 +506,7 @@ return {
           end, { desc = "Remove Unused Imports" })
           vim.keymap.set("n", "<leader>lf", ":EslintFixAll<CR>", { buffer = buf, desc = "Run EslintFixAll" }) -- show  diagnostics for file
 
-          on_attach(ev)
+          on_attach(client)
         end,
         filetypes = {
           "javascript",
@@ -661,43 +676,3 @@ return {
     end,
   },
 }
-
--- -- nvim-lint
--- return {
---   "mfussenegger/nvim-lint",
---   enabled = false,
---   event = {
---     "BufReadPre",
---     "BufNewFile",
---   },
---   config = function()
---     local lint = require("lint")
---
---     lint.linters_by_ft = {
---       javascript = { "eslint" },
---       typescript = { "eslint" },
---       javascriptreact = { "eslint" },
---       typescriptreact = { "eslint" },
---       svelte = { "eslint" },
---       python = { "pylint" },
---     }
---
---     lint.linters.pylint.cmd = "python"
---     lint.linters.pylint.args = { "-m", "pylint", "-f", "json" }
---     -- lint.linters.pylint.args = { "-m", "pylint", "-f", "json", "--from-stdin", function() return vim.api.nvim_buf_get_name(0) end, }
---
---     local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
---
---     vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave", "TextChanged" }, {
---       group = lint_augroup,
---       callback = function()
---         lint.try_lint()
---       end,
---     })
---
---     vim.keymap.set("n", "<leader>lt", function()
---       lint.try_lint()
---     end, { desc = "Trigger linting for current file" })
---     vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format, { desc = "Force linting for current file" })
---   end,
--- }

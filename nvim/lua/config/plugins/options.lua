@@ -8,5 +8,7 @@ function CustomizeColor()
 end
 
 -- catppuccin colorscheme
-vim.cmd.colorscheme("catppuccin-mocha")
+vim.cmd([[colorscheme catppuccin]])
 CustomizeColor()
+
+-- vim.cmd([[colorscheme tokyonight-night]])
