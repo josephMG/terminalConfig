@@ -7,6 +7,7 @@ return {
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = "make",
     opts = {
+      system_prompt = "You are a helpful assistant. Do not provide any explanation, just give the response directly.",
       debug = true,
       cursor_applying_provider = "ollama",
       auto_suggestion_provider = "ollama",
@@ -14,12 +15,12 @@ return {
       behaviour = {
         enable_cursor_planning_mode = true,
       },
-      provider = "gemini",
+      provider = "ollama",
 
       providers = {
         gemini = {
           api_key_name = "GEMINI_API_KEY",
-          model = "gemini-2.5-pro-preview-03-25",
+          model = "gemini-2.5-pro",
           timeout = 30000, -- Timeout in milliseconds
           temperature = 0,
           -- max_tokens = 8192,
@@ -28,14 +29,14 @@ return {
           -- endpoint = "http://127.0.0.1:11434",
           endpoint = "http://host.docker.internal:11434",
           -- model = "qwen3:4b",
-          model = "deepseek-r1:8b",
+          model = "deepseek-r1:1.5b",
           -- disable_tools = true,
           -- mode = "legacy",
-          extra_request_body = {
-            options = {
-              think = false,
-            },
-          },
+          -- extra_request_body = {
+          --   options = {
+          --     think = false,
+          --   },
+          -- },
         },
         groq = {
           -- https://console.groq.com/docs/models

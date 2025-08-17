@@ -492,12 +492,48 @@ return {
         })
       end
 
+      vim.lsp.config("pyright", {
+        cmd = { "pyright-langserver", "--stdio" },
+        filetypes = { "python" },
+        root_markers = {
+          "pyproject.toml",
+          "setup.py",
+          "setup.cfg",
+          "requirements.txt",
+          "Pipfile",
+          "pyrightconfig.json",
+          ".git",
+        },
+        settings = {
+          python = {
+            analysis = {
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              diagnosticMode = "openFilesOnly",
+            },
+          },
+        },
+        on_attach = function(client, bufnr)
+          vim.api.nvim_buf_create_user_command(bufnr, "LspPyrightOrganizeImports", function()
+            client:exec_cmd({
+              command = "pyright.organizeimports",
+              arguments = { vim.uri_from_bufnr(bufnr) },
+            })
+          end, {
+            desc = "Organize Imports",
+          })
+          -- vim.api.nvim_buf_create_user_command(bufnr, "LspPyrightSetPythonPath", set_python_path, {
+          --   desc = "Reconfigure pyright with the provided python path",
+          --   nargs = 1,
+          --   complete = "file",
+          -- })
+          on_attach(client)
+        end,
+      })
       vim.lsp.config("ts_ls", {
         capabilities = capabilities,
         handlers = handlers,
         on_attach = function(client)
-          -- Don't override colorscheme catppuccin
-          client.server_capabilities.semanticTokensProvider = nil
           vim.api.nvim_create_user_command("OrganizeImports", function(cmd)
             organize_imports()
           end, { desc = "Organize Imports" })
@@ -653,6 +689,9 @@ return {
       -- Use lsp-zero's recommended setup for keymaps, completion, etc.
       local lsp_zero = require("lsp-zero")
       lsp_zero.on_attach(function(client, bufnr)
+        -- Don't override colorscheme catppuccin
+        client.server_capabilities.semanticTokensProvider = nil
+
         lsp_zero.default_keymaps({ buffer = bufnr })
 
         -- Optional: Setup keymap for code actions (including ESLint fixes)
