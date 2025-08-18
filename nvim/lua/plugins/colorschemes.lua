@@ -21,7 +21,7 @@ return {
           return {
             ["@tag.builtin"] = { fg = colors.mauve },
             ["@type.builtin"] = { fg = colors.yellow, style = { "italic" } or colors.styles.properties },
-            ["@variable"] = { fg = colors.maroon },
+            -- ["@variable"] = { fg = colors.maroon },
             ["@variable.member"] = { fg = colors.maroon, style = { "italic" } },
             Comment = { fg = colors.flamingo },
             LineNrAbove = { fg = colors.surface2 },

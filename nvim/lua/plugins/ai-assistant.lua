@@ -7,7 +7,7 @@ return {
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = "make",
     opts = {
-      system_prompt = "You are a helpful assistant. Do not provide any explanation, just give the response directly.",
+      system_prompt = "You are a helpful assistant. Do not provide any explanation when you answer me and just give the response directly.",
       debug = true,
       cursor_applying_provider = "ollama",
       auto_suggestion_provider = "ollama",
