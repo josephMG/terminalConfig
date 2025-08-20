@@ -19,10 +19,12 @@ return {
         end,
         mocha = function(colors)
           return {
+            ["@tag"] = { fg = colors.mauve },
             ["@tag.builtin"] = { fg = colors.mauve },
+            ["@tag.attribute"] = { fg = colors.teal },
             ["@type.builtin"] = { fg = colors.yellow, style = { "italic" } or colors.styles.properties },
             -- ["@variable"] = { fg = colors.maroon },
-            ["@variable.member"] = { fg = colors.maroon, style = { "italic" } },
+            ["@variable.member"] = { fg = colors.blue, style = { "italic" } },
             Comment = { fg = colors.flamingo },
             LineNrAbove = { fg = colors.surface2 },
             LineNr = { fg = colors.blue },
