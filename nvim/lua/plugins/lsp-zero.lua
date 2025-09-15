@@ -210,6 +210,93 @@ return {
             },
           },
         },
+        eslint = {
+          settings = {
+            workingDirectories = { mode = "auto" },
+            useFlatConfig = true,
+            -- This is crucial for enabling auto-fix on save
+            autoFixOnSave = true,
+            probe = {
+              "javascript",
+              "javascriptreact",
+              "typescript",
+              "typescriptreact",
+              "vue",
+              "html",
+              "markdown",
+              "json",
+              "json5",
+              "jsonc",
+              "yaml",
+              "toml",
+              "xml",
+              "gql",
+              "graphql",
+              "astro",
+              "svelte",
+              "css",
+              "less",
+              "scss",
+              "pcss",
+              "postcss",
+            },
+            rulesCustomizations = {
+              { rule = "style/*", severity = "off", fixable = true },
+              { rule = "format/*", severity = "off", fixable = true },
+              { rule = "*-indent", severity = "off", fixable = true },
+              { rule = "*-spacing", severity = "off", fixable = true },
+              { rule = "*-spaces", severity = "off", fixable = true },
+              { rule = "*-order", severity = "off", fixable = true },
+              { rule = "*-dangle", severity = "off", fixable = true },
+              { rule = "*-newline", severity = "off", fixable = true },
+              { rule = "*quotes", severity = "off", fixable = true },
+              { rule = "*semi", severity = "off", fixable = true },
+            },
+            options = {
+              -- If you have a specific ESLint config file name, you can set it here
+              configFile = "eslint.config.js",
+            },
+            validate = {
+              "javascript",
+              "javascriptreact",
+              "typescript",
+              "typescriptreact",
+              "vue",
+              "html",
+              "markdown",
+              "json",
+              "json5",
+              "jsonc",
+              "yaml",
+              "toml",
+              "xml",
+              "gql",
+              "graphql",
+              "astro",
+              "svelte",
+              "css",
+              "less",
+              "scss",
+              "pcss",
+              "postcss",
+            },
+            -- Path to your node_modules if needed (e.g., for global ESLint or specific project setup)
+            -- nodePath = vim.fn.expand("~/.nvm/versions/node/v20.11.1/bin/node"),
+          },
+          -- Filetypes where ESLint should be active
+          filetypes = {
+            "javascript",
+            "typescript",
+            "javascriptreact",
+            "typescriptreact",
+            "vue",
+            "html",
+            "json",
+            "jsonc",
+            "yaml",
+            "markdown",
+          },
+        },
       },
       setup = {
         ts_ls = function(_, opts)
@@ -228,92 +315,9 @@ return {
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
       local lspconfig = require("lspconfig")
 
-      -- Configure individual LSP servers
       lspconfig.eslint.setup({
         -- ESLint specific settings
-        settings = {
-          -- This is crucial for enabling auto-fix on save
-          ["eslint.autoFixOnSave"] = true,
-          ["eslint.probe"] = {
-            "javascript",
-            "javascriptreact",
-            "typescript",
-            "typescriptreact",
-            "vue",
-            "html",
-            "markdown",
-            "json",
-            "json5",
-            "jsonc",
-            "yaml",
-            "toml",
-            "xml",
-            "gql",
-            "graphql",
-            "astro",
-            "svelte",
-            "css",
-            "less",
-            "scss",
-            "pcss",
-            "postcss",
-          },
-          rulesCustomizations = {
-            { rule = "style/*", severity = "off", fixable = true },
-            { rule = "format/*", severity = "off", fixable = true },
-            { rule = "*-indent", severity = "off", fixable = true },
-            { rule = "*-spacing", severity = "off", fixable = true },
-            { rule = "*-spaces", severity = "off", fixable = true },
-            { rule = "*-order", severity = "off", fixable = true },
-            { rule = "*-dangle", severity = "off", fixable = true },
-            { rule = "*-newline", severity = "off", fixable = true },
-            { rule = "*quotes", severity = "off", fixable = true },
-            { rule = "*semi", severity = "off", fixable = true },
-          },
-          ["eslint.options"] = {
-            -- If you have a specific ESLint config file name, you can set it here
-            -- configFile = ".eslintrc.js"
-          },
-          ["eslint.validate"] = {
-            "javascript",
-            "javascriptreact",
-            "typescript",
-            "typescriptreact",
-            "vue",
-            "html",
-            "markdown",
-            "json",
-            "json5",
-            "jsonc",
-            "yaml",
-            "toml",
-            "xml",
-            "gql",
-            "graphql",
-            "astro",
-            "svelte",
-            "css",
-            "less",
-            "scss",
-            "pcss",
-            "postcss",
-          },
-          -- Path to your node_modules if needed (e.g., for global ESLint or specific project setup)
-          -- ["eslint.nodePath"] = vim.fn.expand("~/.nvm/versions/node/v20.11.1/bin/node"),
-        },
-        -- Filetypes where ESLint should be active
-        filetypes = {
-          "javascript",
-          "typescript",
-          "javascriptreact",
-          "typescriptreact",
-          "vue",
-          "html",
-          "json",
-          "jsonc",
-          "yaml",
-          "markdown",
-        },
+
         -- Important: Enable formatting capabilities
         on_init = function(client)
           if client.name == "eslint" then
@@ -530,6 +534,7 @@ return {
           on_attach(client)
         end,
       })
+
       vim.lsp.config("ts_ls", {
         capabilities = capabilities,
         handlers = handlers,
@@ -566,104 +571,6 @@ return {
           },
         },
       })
-
-      -- vim.lsp.config("eslint", {
-      --   capabilities = capabilities,
-      --   handlers = handlers,
-      --   on_attach = function(ev)
-      --     if ev.name == 'eslint' then
-      --       ev.server_capabilities.document_formatting = true
-      --       ev.server_capabilities.document_range_formatting = true
-      --     end
-      --     on_attach(ev)
-      --   end,
-      --   -- ESLint specific settings
-      --   settings = {
-      --     -- This is crucial for enabling auto-fix on save
-      --     ["eslint.autoFixOnSave"] = true,
-      --     ["eslint.probe"] = {
-      --       "javascript",
-      --       "javascriptreact",
-      --       "typescript",
-      --       "typescriptreact",
-      --       "vue",
-      --       "html",
-      --       "markdown",
-      --       "json",
-      --       "json5",
-      --       "jsonc",
-      --       "yaml",
-      --       "toml",
-      --       "xml",
-      --       "gql",
-      --       "graphql",
-      --       "astro",
-      --       "svelte",
-      --       "css",
-      --       "less",
-      --       "scss",
-      --       "pcss",
-      --       "postcss"
-      --     },
-      --     rulesCustomizations = {
-      --       { rule= "style/*", severity= "off", fixable= true },
-      --       { rule= "format/*", severity= "off", fixable= true },
-      --       { rule= "*-indent", severity= "off", fixable= true },
-      --       { rule= "*-spacing", severity= "off", fixable= true },
-      --       { rule= "*-spaces", severity= "off", fixable= true },
-      --       { rule= "*-order", severity= "off", fixable= true },
-      --       { rule= "*-dangle", severity= "off", fixable= true },
-      --       { rule= "*-newline", severity= "off", fixable= true },
-      --       { rule= "*quotes", severity= "off", fixable= true },
-      --       { rule= "*semi", severity= "off", fixable= true }
-      --
-      --     },
-      --     -- ["eslint.options"] = {
-      --     --   -- If you have a specific ESLint config file name, you can set it here
-      --     --   -- configFile = "eslint.config.js"
-      --     -- },
-      --     ["eslint.validate"] = {
-      --       "javascript",
-      --       "javascriptreact",
-      --       "typescript",
-      --       "typescriptreact",
-      --       "vue",
-      --       "html",
-      --       "markdown",
-      --       "json",
-      --       "json5",
-      --       "jsonc",
-      --       "yaml",
-      --       "toml",
-      --       "xml",
-      --       "gql",
-      --       "graphql",
-      --       "astro",
-      --       "svelte",
-      --       "css",
-      --       "less",
-      --       "scss",
-      --       "pcss",
-      --       "postcss"
-      --     },
-      --     -- Path to your node_modules if needed (e.g., for global ESLint or specific project setup)
-      --     -- ["eslint.nodePath"] = vim.fn.expand("~/.nvm/versions/node/v20.11.1/bin/node"),
-      --   },
-      --   -- Filetypes where ESLint should be active
-      --   filetypes = {
-      --     "javascript",
-      --     "typescript",
-      --     "javascriptreact",
-      --     "typescriptreact",
-      --     "vue",
-      --     "html",
-      --     "json",
-      --     "jsonc",
-      --     "yaml",
-      --     "markdown",
-      --   },
-      --   -- Important: Enable formatting capabilities
-      -- })
     end,
   },
 

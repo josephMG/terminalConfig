@@ -15,7 +15,7 @@ return {
       behaviour = {
         enable_cursor_planning_mode = true,
       },
-      provider = "ollama",
+      provider = "gemini",
 
       providers = {
         gemini = {
@@ -28,8 +28,8 @@ return {
         ollama = {
           -- endpoint = "http://127.0.0.1:11434",
           endpoint = "http://host.docker.internal:11434",
-          -- model = "qwen3:4b",
-          model = "deepseek-r1:1.5b",
+          model = "gpt-oss:20b",
+          -- model = "deepseek-r1:1.5b",
           -- disable_tools = true,
           -- mode = "legacy",
           -- extra_request_body = {

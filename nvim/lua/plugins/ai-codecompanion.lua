@@ -10,35 +10,37 @@ return {
       log_level = "DEBUG",
     },
     adapters = {
-      ollama = function()
-        return require("codecompanion.adapters").extend("ollama", {
-          env = {
-            url = "http://host.docker.internal:11434",
-          },
-          parameters = {
-            sync = true,
-          },
-          schema = {
-            model = {
-              -- default = "qwen3:4b",
-              default = "gemma3:4b",
+      http = {
+        ollama = function()
+          return require("codecompanion.adapters").extend("ollama", {
+            env = {
+              url = "http://host.docker.internal:11434",
             },
-            num_ctx = {
-              default = 16384,
+            parameters = {
+              sync = true,
             },
-            num_predict = {
-              default = -1,
+            schema = {
+              model = {
+                -- default = "qwen3:4b",
+                default = "gemma3:4b",
+              },
+              num_ctx = {
+                default = 16384,
+              },
+              num_predict = {
+                default = -1,
+              },
             },
-          },
-        })
-      end,
-      gemini = function()
-        return require("codecompanion.adapters").extend("gemini", {
-          env = {
-            api_key = "GEMINI_API_KEY",
-          },
-        })
-      end,
+          })
+        end,
+        gemini = function()
+          return require("codecompanion.adapters").extend("gemini", {
+            env = {
+              api_key = "GEMINI_API_KEY",
+            },
+          })
+        end,
+      },
     },
     strategies = {
       chat = {
