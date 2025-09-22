@@ -1,5 +1,54 @@
 return {
   {
+    "NickvanDyke/opencode.nvim",
+    dependencies = {
+      -- Recommended for better prompt input, and required to use `opencode.nvim`'s embedded terminal — otherwise optional
+      { "folke/snacks.nvim", opts = { input = { enabled = true } } },
+    },
+    config = function()
+      vim.g.opencode_opts = {
+        -- Your configuration, if any — see `lua/opencode/config.lua`
+      }
+
+      -- Required for `opts.auto_reload`
+      vim.opt.autoread = true
+
+      -- Recommended keymaps
+      vim.keymap.set("n", "<leader>ot", function()
+        require("opencode").toggle()
+      end, { desc = "Toggle opencode" })
+      vim.keymap.set("n", "<leader>oA", function()
+        require("opencode").ask()
+      end, { desc = "Ask opencode" })
+      vim.keymap.set("n", "<leader>oa", function()
+        require("opencode").ask("@cursor: ")
+      end, { desc = "Ask opencode about this" })
+      vim.keymap.set("v", "<leader>oa", function()
+        require("opencode").ask("@selection: ")
+      end, { desc = "Ask opencode about selection" })
+      vim.keymap.set("n", "<leader>on", function()
+        require("opencode").command("session_new")
+      end, { desc = "New opencode session" })
+      vim.keymap.set("n", "<leader>oy", function()
+        require("opencode").command("messages_copy")
+      end, { desc = "Copy last opencode response" })
+      vim.keymap.set("n", "<S-C-u>", function()
+        require("opencode").command("messages_half_page_up")
+      end, { desc = "Messages half page up" })
+      vim.keymap.set("n", "<S-C-d>", function()
+        require("opencode").command("messages_half_page_down")
+      end, { desc = "Messages half page down" })
+      vim.keymap.set({ "n", "v" }, "<leader>os", function()
+        require("opencode").select()
+      end, { desc = "Select opencode prompt" })
+
+      -- Example: keymap for custom prompt
+      vim.keymap.set("n", "<leader>oe", function()
+        require("opencode").prompt("Explain @cursor and its context")
+      end, { desc = "Explain this code" })
+    end,
+  },
+  {
     "yetone/avante.nvim",
     event = "VeryLazy",
     lazy = false,
@@ -87,6 +136,100 @@ return {
         ft = { "markdown", "Avante" },
       },
     },
+  },
+  {
+    "olimorris/codecompanion.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    opts = {
+      opts = {
+        -- Set debug logging
+        log_level = "DEBUG",
+      },
+      adapters = {
+        http = {
+          ollama = function()
+            return require("codecompanion.adapters").extend("ollama", {
+              env = {
+                url = "http://host.docker.internal:11434",
+              },
+              parameters = {
+                sync = true,
+              },
+              schema = {
+                model = {
+                  -- default = "qwen3:4b",
+                  default = "gemma3:4b",
+                },
+                num_ctx = {
+                  default = 16384,
+                },
+                num_predict = {
+                  default = -1,
+                },
+              },
+            })
+          end,
+          gemini = function()
+            return require("codecompanion.adapters").extend("gemini", {
+              env = {
+                api_key = "GEMINI_API_KEY",
+              },
+            })
+          end,
+        },
+      },
+      strategies = {
+        chat = {
+          adapter = "gemini",
+        },
+        inline = {
+          adapter = "gemini",
+        },
+        agent = {
+          adapter = "gemini",
+        },
+      },
+    },
+    config = function(_, opts)
+      extend_opts = {
+        display = {
+          chat = {
+            window = {
+              layout = "vertical", -- float|vertical|horizontal|buffer
+              position = "right",
+              -- border = "double", -- float only
+            },
+            show_settings = true,
+          },
+          diff = {
+            enabled = true,
+            close_chat_at = 240, -- Close an open chat buffer if the total columns of your display are less than...
+            layout = "vertical", -- vertical|horizontal split for default provider
+            opts = { "internal", "filler", "closeoff", "algorithm:patience", "followwrap", "linematch:120" },
+            provider = "default", -- default|mini_diff
+          },
+          action_palette = {
+            width = 95,
+            height = 10,
+            prompt = "Prompt ", -- Prompt used for interactive LLM calls
+            provider = "default", -- Can be "default", "telescope", or "mini_pick". If not specified, the plugin will autodetect installed providers.
+            opts = {
+              show_default_actions = true, -- Show the default actions in the action palette?
+              show_default_prompt_library = true, -- Show the default prompt library in the action palette?
+            },
+          },
+          inline = {
+            layout = "vertical", -- vertical|horizontal|buffer
+          },
+        },
+      }
+
+      merged_opts = vim.tbl_deep_extend("force", opts, extend_opts)
+      require("codecompanion").setup(merged_opts)
+    end,
   },
   {
     "robitx/gp.nvim",
