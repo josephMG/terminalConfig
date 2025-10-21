@@ -12,3 +12,5 @@ vim.cmd([[colorscheme catppuccin]])
 CustomizeColor()
 
 -- vim.cmd([[colorscheme tokyonight-night]])
+--
+require("telescope").load_extension("file_browser")

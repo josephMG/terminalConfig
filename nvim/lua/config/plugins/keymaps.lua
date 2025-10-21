@@ -8,6 +8,17 @@ vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Telescope help ta
 vim.keymap.set("n", "<leader>fw", function()
   builtin.grep_string({ search = vim.fn.input("Grep > ") })
 end, { desc = "Telescope grep string" })
+vim.keymap.set("n", "<leader>fr", ":Telescope file_browser path=%:p:h select_buffer=true<CR>")
+-- vim.keymap.set("n", "<leader>fr", function()
+--   require("telescope").extensions.file_browser.file_browser({
+--     respect_gitignore = false,
+--     group = true,
+--     grouped = true,
+--     display_stat = { date = true, size = false, mode = false },
+--     hijack_netrw = true,
+--     layout_config = { height = 40, width = 180 },
+--   })
+-- end)
 
 -- neo-tree
 vim.keymap.set("n", "<leader>fe", "<cmd>Neotree toggle filesystem left<cr>", { desc = "Explorer NeoTree (cwd)" })

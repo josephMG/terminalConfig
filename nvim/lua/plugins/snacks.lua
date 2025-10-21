@@ -8,9 +8,9 @@ return {
     gitbrowse = {
       branch = "master",
     },
-    explorer = {
-      replace_netrw = true,
-    },
+    -- explorer = {
+    --   replace_netrw = true,
+    -- },
     bigfile = { enabled = true },
     indent = {
       enabled = true,
@@ -32,9 +32,9 @@ return {
     picker = {
       enabled = true,
       sources = {
-        explorer = {
-          replace_netrw = true,
-        },
+        -- explorer = {
+        --   replace_netrw = true,
+        -- },
       },
     },
     quickfile = { enabled = true },
@@ -46,9 +46,6 @@ return {
         -- wo = { wrap = true } -- Wrap notifications
       },
     },
-    -- explorer = {
-    --   replace_netrw = true,
-    -- },
     dashboard = {
       preset = {
         pick = nil,

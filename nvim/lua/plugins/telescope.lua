@@ -29,6 +29,14 @@ return {
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {
       defaults = {
+        layout_config = {
+          horizontal = {
+            prompt_position = "top",
+            preview_width = 0.52,
+          },
+          -- preview_cutoff = 120,
+        },
+        border = true,
         mappings = {
           i = {
             ["<CR>"] = select_one_or_multi,
@@ -42,7 +50,9 @@ return {
       },
       extensions = {
         file_browser = {
-          theme = "ivy",
+          grouped = true,
+          display_stat = false,
+          layout_config = { height = 40, width = 180 },
           -- disables netrw and use telescope-file-browser in its place
           hijack_netrw = true,
           mappings = {
