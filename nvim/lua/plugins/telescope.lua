@@ -23,21 +23,42 @@ local select_one_or_multi = function(prompt_bufnr)
 end
 
 return {
-  "nvim-telescope/telescope.nvim",
-  -- or                              , branch = '0.1.x',
-  dependencies = { "nvim-lua/plenary.nvim" },
-  opts = {
-    defaults = {
-      mappings = {
-        i = {
-          ["<CR>"] = select_one_or_multi,
-          -- ["<CR>"] = require("telescope.actions").select_tab,
+  {
+    "nvim-telescope/telescope.nvim",
+    -- or                              , branch = '0.1.x',
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {
+      defaults = {
+        mappings = {
+          i = {
+            ["<CR>"] = select_one_or_multi,
+            -- ["<CR>"] = require("telescope.actions").select_tab,
+          },
+          n = {
+            ["<CR>"] = select_one_or_multi,
+            -- ["<CR>"] = require("telescope.actions").select_tab,
+          },
         },
-        n = {
-          ["<CR>"] = select_one_or_multi,
-          -- ["<CR>"] = require("telescope.actions").select_tab,
+      },
+      extensions = {
+        file_browser = {
+          theme = "ivy",
+          -- disables netrw and use telescope-file-browser in its place
+          hijack_netrw = true,
+          mappings = {
+            ["i"] = {
+              -- your custom insert mode mappings
+            },
+            ["n"] = {
+              -- your custom normal mode mappings
+            },
+          },
         },
       },
     },
+  },
+  {
+    "nvim-telescope/telescope-file-browser.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
   },
 }

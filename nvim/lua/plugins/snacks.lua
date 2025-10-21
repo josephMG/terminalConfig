@@ -8,6 +8,9 @@ return {
     gitbrowse = {
       branch = "master",
     },
+    explorer = {
+      replace_netrw = true,
+    },
     bigfile = { enabled = true },
     indent = {
       enabled = true,
@@ -26,7 +29,14 @@ return {
       enabled = true,
       timeout = 3000,
     },
-    picker = { enabled = true },
+    picker = {
+      enabled = true,
+      sources = {
+        explorer = {
+          replace_netrw = true,
+        },
+      },
+    },
     quickfile = { enabled = true },
     scroll = { enabled = true },
     statuscolumn = { enabled = true },
@@ -85,6 +95,13 @@ return {
       desc = "Toggle Zoom",
     },
     {
+      "<leader>ze",
+      function()
+        Snacks.explorer()
+      end,
+      desc = "File Explorer",
+    },
+    {
       "<leader>.",
       function()
         Snacks.scratch()
@@ -104,13 +121,6 @@ return {
         Snacks.notifier.show_history()
       end,
       desc = "Notification History",
-    },
-    {
-      "<leader>bd",
-      function()
-        Snacks.bufdelete()
-      end,
-      desc = "Delete Buffer",
     },
     {
       "<leader>cR",

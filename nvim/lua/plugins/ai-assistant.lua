@@ -241,7 +241,12 @@ return {
             endpoint = "https://api.openai.com/v1/chat/completions",
             -- secret = os.getenv("OPENAI_API_KEY"),
           },
+          googleai = {
+            endpoint = "https://generativelanguage.googleapis.com/v1beta/models/{{model}}:streamGenerateContent?key={{secret}}",
+            secret = os.getenv("GEMINI_API_KEY"),
+          },
           ollama = {
+            disable = true,
             endpoint = "http://localhost:11434/v1/chat/completions",
           },
         },
@@ -267,6 +272,25 @@ return {
             name = "ChatOllamaLlama3.1-8B", -- standard agent name to disable
             disable = true,
           },
+          {
+            provider = "googleai",
+            name = "ChatGemini",
+            chat = true,
+            command = false,
+            -- string with model name or table with model name and parameters
+            model = { model = "gemini-2.5-pro", temperature = 1.1, top_p = 1 },
+            -- system prompt (use this to specify the persona/role of the AI)
+            system_prompt = require("gp.defaults").chat_system_prompt,
+          },
+          {
+            provider = "googleai",
+            name = "CodeGemini",
+            chat = false,
+            command = true,
+            -- string with model name or table with model name and parameters
+            model = { model = "gemini-2.5-pro", temperature = 0.8, top_p = 1 },
+            system_prompt = require("gp.defaults").code_system_prompt,
+          },
         },
         hooks = {
           -- example of usig enew as a function specifying type for the new buffer
@@ -283,26 +307,26 @@ return {
             -- call GpChatNew command in range mode on whole buffer
             vim.api.nvim_command("%" .. gp.config.cmd_prefix .. "ChatNew")
           end,
-          -- ReactIconSvg = function(gp, params)
-          --   local buf = vim.api.nvim_get_current_buf()
-          --   local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-          --   local content = table.concat(lines, "\n")
-          --   local template = "The following SVG code needs to be converted into a valid React component:\n\n"
-          --     .. "INPUT:\n"
-          --     .. "```tsx\n"
-          --     .. content
-          --     .. "```\n\n"
-          --     .. "  - Remove the `width` and `height` props from the `<svg>` element\n"
-          --     .. "  - Add `{...props}` to the bottom of the `<svg>` element\n"
-          --     .. "  - Replace all `fill` values with `currentColor`\n"
-          --     .. "  - Replace all props that are dash-separated (ex: `fill-rule`) with camelCase (ex: `fillRule`)\n"
-          --     .. "  - Don't remove any other props or attributes\n"
-          --     .. "  - Preserve the indentation rules\n"
-          --     .. "  - Only include the code snippet, no additional context or explanation is needed."
-          --   local agent = gp.get_command_agent()
-          --   gp.logger.info("Updating React SVG: " .. agent.name)
-          --   gp.Prompt(params, gp.Target.rewrite, agent, template, nil)
-          -- end,
+          ReactIconSvg = function(gp, params)
+            local buf = vim.api.nvim_get_current_buf()
+            local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+            local content = table.concat(lines, "\n")
+            local template = "The following SVG code needs to be converted into a valid React component:\n\n"
+              .. "INPUT:\n"
+              .. "```tsx\n"
+              .. content
+              .. "```\n\n"
+              -- .. "  - Remove the `width` and `height` props from the `<svg>` element\n"
+              .. "  - Add `{...props}` to the bottom of the `<svg>` element\n"
+              .. "  - Replace all `fill` values with `currentColor`\n"
+              .. "  - Replace all props that are dash-separated (ex: `fill-rule`) with camelCase (ex: `fillRule`)\n"
+              .. "  - Don't remove any other props or attributes\n"
+              .. "  - Preserve the indentation rules\n"
+              .. "  - Only include the code snippet, no additional context or explanation is needed."
+            local agent = gp.get_command_agent()
+            gp.logger.info("Updating React SVG: " .. agent.name)
+            gp.Prompt(params, gp.Target.rewrite, agent, template, nil)
+          end,
           UiIconExport = function(gp, params)
             local template = "The following React modules need to be refactored and properly exported:\n\n"
               .. "```tsx\n{{selection}}\n```\n\n"

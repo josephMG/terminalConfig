@@ -11,7 +11,6 @@ end, { desc = "Telescope grep string" })
 
 -- neo-tree
 vim.keymap.set("n", "<leader>fe", "<cmd>Neotree toggle filesystem left<cr>", { desc = "Explorer NeoTree (cwd)" })
-vim.keymap.set("n", "<leader>e", "<leader>fe", { desc = "Explorer NeoTree (cwd)" })
 vim.keymap.set("n", "<leader>ge", "<cmd>Neotree toggle git_status left<cr>", { desc = "Git Explorer" })
 vim.keymap.set("n", "<leader>be", "<cmd>Neotree toggle buffers left<cr>", { desc = "Buffer Explorer" })
 
