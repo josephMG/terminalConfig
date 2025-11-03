@@ -1,3 +1,4 @@
+-- Auto session when reopen
 return {
   "rmagatti/auto-session",
   lazy = false,

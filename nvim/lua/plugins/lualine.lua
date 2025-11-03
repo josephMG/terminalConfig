@@ -1,3 +1,4 @@
+-- NVIM line on the bottom of ternimal
 return {
   "nvim-lualine/lualine.nvim",
   dependencies = { "nvim-tree/nvim-web-devicons" },

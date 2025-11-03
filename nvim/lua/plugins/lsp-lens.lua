@@ -1,3 +1,4 @@
+-- codelen for definition, references, implements, and author
 local SymbolKind = vim.lsp.protocol.SymbolKind
 return {
   "VidocqH/lsp-lens.nvim",

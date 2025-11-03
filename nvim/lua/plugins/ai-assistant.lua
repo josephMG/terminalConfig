@@ -1,3 +1,4 @@
+-- AI assistant
 return {
   {
     "NickvanDyke/opencode.nvim",

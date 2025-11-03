@@ -1,3 +1,5 @@
+-- file search and grep
+
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 
@@ -16,8 +18,8 @@ local select_one_or_multi = function(prompt_bufnr)
     local lnum = entry.lnum or 1
     local lcol = entry.col or 1
     if filename then
-      vim.cmd(string.format("tabnew +%d %s", lnum, filename))
-      vim.cmd(string.format("normal! %dG%d|", lnum, lcol))
+      vim.cmd(string.format("edit %s", filename))
+      -- vim.cmd(string.format("normal! %dG%d|", lnum, lcol))
     end
   end
 end

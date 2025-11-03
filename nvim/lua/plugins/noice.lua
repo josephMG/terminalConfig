@@ -1,3 +1,4 @@
+-- cmdline and notice UI
 return {
   "folke/noice.nvim",
   event = "VeryLazy",

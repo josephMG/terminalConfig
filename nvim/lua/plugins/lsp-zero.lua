@@ -1,3 +1,4 @@
+-- LSP configuration
 return {
   -- Mason
   {

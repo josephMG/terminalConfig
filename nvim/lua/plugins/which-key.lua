@@ -1,3 +1,5 @@
+-- which key mapping
+
 return {
   "folke/which-key.nvim",
   event = "VeryLazy",

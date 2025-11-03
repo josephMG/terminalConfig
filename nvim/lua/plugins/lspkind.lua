@@ -1,1 +1,2 @@
-return  { 'onsails/lspkind.nvim' } 
+-- LSP icon when popup hint
+return { "onsails/lspkind.nvim" }

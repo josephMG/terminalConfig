@@ -1,3 +1,5 @@
+-- buffer line on top of nvim
+
 _G.__cached_neo_tree_selector = nil
 _G.__get_selector = function()
   return _G.__cached_neo_tree_selector

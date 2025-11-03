@@ -1,3 +1,4 @@
+-- file browser icon
 return {
   "echasnovski/mini.icons",
   opts = {
