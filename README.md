@@ -12,9 +12,11 @@
 - asdf
   - asdf-node
   - asdf-python
+  - asdf-ruby
 - npm
   - devcontainer/cli
   - typescript
   - typescript-language-server
   - @vtsls/language-server
   - pyright
+- flutter (.zprofile --> ~/development/flutter)
