@@ -9,6 +9,7 @@ return {
     gitbrowse = {
       branch = "master",
     },
+    terminal = { enabled = true },
     -- explorer = {
     --   replace_netrw = true,
     -- },
