@@ -7,8 +7,8 @@ vim.g.maplocalleader = "\\"
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { noremap = true, silent = true, desc = "Move block up 1 line" })
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { noremap = true, silent = true, desc = "Move block down 2 lines" })
 
-vim.keymap.set({ "n", "v", "i" }, "<S-C-Right>", "<End>", { remap = true, desc = "Move to end of line" })
-vim.keymap.set({ "n", "v", "i" }, "<S-C-Left>", "<Home>", { remap = true, desc = "Move to start of line" })
+vim.keymap.set({ "n", "v", "i" }, "<S-C-l>", "<End>", { remap = true, desc = "Move to end of line" })
+vim.keymap.set({ "n", "v", "i" }, "<S-C-h>", "<Home>", { remap = true, desc = "Move to start of line" })
 -- vim.keymap.set({"n", "v", "i"}, "<C-Left>", "<Home>", { desc = "Move to end of line" })
 
 -- buffers
