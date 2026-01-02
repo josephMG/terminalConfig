@@ -587,11 +587,14 @@ return {
       -- Autocompletion
       { "L3MON4D3/LuaSnip" },
       { "hrsh7th/nvim-cmp" },
+
       { "hrsh7th/cmp-buffer" },
       { "hrsh7th/cmp-path" },
       { "saadparwaiz1/cmp_luasnip" },
       { "hrsh7th/cmp-nvim-lsp" },
       { "hrsh7th/cmp-nvim-lua" },
+      { "hrsh7th/cmp-cmdline" },
+      { "onsails/lspkind.nvim" },
     },
     config = function()
       -- Use lsp-zero's recommended setup for keymaps, completion, etc.
@@ -606,6 +609,59 @@ return {
         vim.keymap.set("n", "<leader>ca", function()
           vim.lsp.buf.code_action({ context = { only = { "quickfix", "source.fixAll" } }, apply = true })
         end, { buffer = bufnr, desc = "LSP Code Action (Fix All)" })
+
+        local cmp_action = require("lsp-zero").cmp_action()
+        local cmp = require("cmp")
+        local cmp_select = { behavior = cmp.SelectBehavior.Select }
+
+        require("luasnip.loaders.from_vscode").lazy_load()
+
+        -- `/` cmdline setup.
+        cmp.setup.cmdline("/", {
+          mapping = cmp.mapping.preset.cmdline(),
+          sources = {
+            { name = "buffer" },
+          },
+        })
+
+        -- `:` cmdline setup.
+        cmp.setup.cmdline(":", {
+          mapping = cmp.mapping.preset.cmdline(),
+          sources = cmp.config.sources({
+            { name = "path" },
+          }, {
+            {
+              name = "cmdline",
+              option = {
+                ignore_cmds = { "Man", "!" },
+              },
+            },
+          }),
+        })
+
+        cmp.setup({
+          snippet = {
+            expand = function(args)
+              require("luasnip").lsp_expand(args.body)
+            end,
+          },
+          sources = {
+            { name = "nvim_lsp" },
+            { name = "luasnip", keyword_length = 2 },
+            { name = "buffer", keyword_length = 3 },
+            { name = "path" },
+          },
+          mapping = cmp.mapping.preset.insert({
+            ["<C-p>"] = cmp.mapping.select_prev_item(cmp_select),
+            ["<C-n>"] = cmp.mapping.select_next_item(cmp_select),
+            ["<CR>"] = cmp.mapping.confirm({ select = true }),
+            ["<C-Space>"] = cmp.mapping.complete(),
+            ["<C-f>"] = cmp_action.luasnip_jump_forward(),
+            ["<C-b>"] = cmp_action.luasnip_jump_backward(),
+            ["<Tab>"] = cmp_action.luasnip_supertab(),
+            ["<S-Tab>"] = cmp_action.luasnip_shift_supertab(),
+          }),
+        })
 
         -- Optional: Format on save for specific clients (if you don't rely on `autoFixOnSave` fully)
         if client.name == "eslint" or client.name == "tsserver" then

@@ -9,7 +9,7 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { noremap = true, silent = true, de
 
 vim.keymap.set({ "n", "v", "i" }, "<S-C-l>", "<End>", { remap = true, desc = "Move to end of line" })
 vim.keymap.set({ "n", "v", "i" }, "<S-C-h>", "<Home>", { remap = true, desc = "Move to start of line" })
--- vim.keymap.set({"n", "v", "i"}, "<C-Left>", "<Home>", { desc = "Move to end of line" })
+vim.keymap.set({ "n", "v", "i" }, "<C-Left>", "<Home>", { desc = "Move to end of line" })
 
 -- buffers
 vim.keymap.set("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev Buffer" })

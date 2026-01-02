@@ -1,9 +1,6 @@
 -- auto completion
 return {
   {
-    "hrsh7th/cmp-nvim-lsp",
-  },
-  {
     "L3MON4D3/LuaSnip",
     dependencies = {
       "saadparwaiz1/cmp_luasnip",
@@ -42,7 +39,7 @@ return {
       vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
       local cmp = require("cmp")
       local luasnip = require("luasnip")
-      local lspkind = require("lspkind")
+      -- local lspkind = require("lspkind")
 
       require("luasnip.loaders.from_vscode").lazy_load()
 
@@ -57,7 +54,7 @@ return {
           documentation = cmp.config.window.bordered(),
         },
         formatting = {
-          format = lspkind.cmp_format(),
+          -- format = lspkind.cmp_format(),
         },
         mapping = cmp.mapping.preset.insert({
           ["<C-b>"] = cmp.mapping.scroll_docs(-4),
