@@ -7,11 +7,14 @@ end
 
 return {
   "akinsho/bufferline.nvim",
+  -- enabled = false,
   version = "*",
   dependencies = "nvim-tree/nvim-web-devicons",
   opts = {
     -- mode = "tabs",
     options = {
+      separator_style = "slant",
+      indicator = { style = "underline" },
       sort_by = "insert_after_current",
       numbers = function(opts)
         local state = require("bufferline.state")
