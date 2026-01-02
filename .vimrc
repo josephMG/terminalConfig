@@ -2,7 +2,7 @@
 source $HOME/.vim/init/plug.vimrc
 source $HOME/.vim/init/general.vimrc
 source $HOME/.vim/init/functions.vimrc
-source $HOME/.vim/init/coc_init.vimrc
+" source $HOME/.vim/init/coc_init.vimrc
 
 autocmd FileType ruby,eruby let g:rubycomplete_rails = 1
 autocmd FileType ruby,eruby let g:rubycomplete_buffer_loading = 1
