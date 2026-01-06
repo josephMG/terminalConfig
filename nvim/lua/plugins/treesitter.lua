@@ -2,6 +2,7 @@
 return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
+  lazy = false,
   -- enabled = false,
   dependencies = {
     "windwp/nvim-ts-autotag",
@@ -24,11 +25,10 @@ return {
       "css",
       "scss",
       "vue",
-      "svelte",
+      "python",
       "markdown", -- lsp, lspsaga diagnostic
       "markdown_inline", -- lsp, lspsaga diagnostic
       "bash",
-      "c",
       "diff",
       "luadoc",
       "query",
@@ -68,6 +68,30 @@ return {
         "xml",
       },
     })
+
+    -- ensure basic parser are installed
+    local parsers = {
+      "comment",
+      "lua",
+      "javascript",
+      -- "javascriptreact",
+      "jsdoc",
+      "typescript",
+      -- "typescriptreact",
+      "tsx",
+      "fish",
+      "json",
+      "yaml",
+      "html",
+      "css",
+      "scss",
+      "vue",
+      "svelte",
+      "markdown", -- lsp, lspsaga diagnostic
+      "markdown_inline", -- lsp, lspsaga diagnostic
+    }
+    require("nvim-treesitter").install(parsers)
+
     ---@param buf integer
     ---@param language string
     local function treesitter_try_attach(buf, language)
@@ -111,29 +135,6 @@ return {
         end
       end,
     })
-    --
-    -- -- ensure basic parser are installed
-    -- local parsers = {
-    --   "comment",
-    --   "lua",
-    --   "javascript",
-    --   -- "javascriptreact",
-    --   "jsdoc",
-    --   "typescript",
-    --   -- "typescriptreact",
-    --   "tsx",
-    --   "fish",
-    --   "json",
-    --   "yaml",
-    --   "html",
-    --   "css",
-    --   "scss",
-    --   "vue",
-    --   "svelte",
-    --   "markdown", -- lsp, lspsaga diagnostic
-    --   "markdown_inline", -- lsp, lspsaga diagnostic
-    -- }
-    -- require("nvim-treesitter").install(parsers)
 
     local wk = require("which-key")
     wk.add({
