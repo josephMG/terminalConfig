@@ -9,6 +9,7 @@
 - zim
   - p10k
 - tmux
+  - tpm: `git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm`
 - asdf
   - asdf-node
   - asdf-python
