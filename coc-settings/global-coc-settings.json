@@ -1,0 +1,23 @@
+  {
+    "diagnostic.displayByAle": false,
+    "diagnostic.virtualText": false,
+    "diagnostic.virtualTextCurrentLineOnly": true,
+    "diagnostic.checkCurrentLine": true,
+    "coc.preferences.jumpCommand": "tab drop",
+    "prettier.disableLanguages": [
+      "json",
+      "markdown"
+    ],
+    "javascript.preferences.importModuleSpecifier": "non-relative",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "javascript.suggest.autoImports": true,
+    "typescript.suggest.autoImports": true,
+    "tsserver.log": "verbose",
+    "tsserver.trace.server": "verbose",
+    "tsserver.watchOptions": {
+      "watchFile": "useFsEventsOnParentDirectory",
+      "watchDirectory": "useFsEvents",
+      "fallbackPolling": "fixedPollingInterval"
+    },
+    "snippets.ultisnips.pythonPrompt": false
+  }

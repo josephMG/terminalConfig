@@ -1,0 +1,25 @@
+- chrome
+- apt
+  - ripgrep
+  - fzf
+  - neovim
+  - golang (asdf needed)
+- docker desktop
+- zim
+  - p10k, ~/.p10k.sh remove the line 'where[13,-13]="…"' after search `If local branch name `
+- tmux
+  - tpm: `git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm`
+  - catppuccin: `git clone -b v2.1.3 https://github.com/catppuccin/tmux.git ~/.tmux/plugins/catppuccin/tmux`
+- asdf
+  - **make, and move asdf to /usr/local/bin**
+  - asdf-node
+  - asdf-python
+  - asdf-ruby
+- npm
+  - tree-sitter-cli
+  - devcontainer/cli
+  - typescript
+  - typescript-language-server
+  - @vtsls/language-server
+  - pyright
+- flutter (.zprofile --> ~/development/flutter)
