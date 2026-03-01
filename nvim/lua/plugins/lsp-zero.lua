@@ -314,13 +314,11 @@ return {
     end,
     config = function(_, opts)
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
-      local lspconfig = require("lspconfig")
 
-      lspconfig.eslint.setup({
-        -- ESLint specific settings
-
+      -- ESLint specific settings
+      vim.lsp.config("eslint", {
         -- Important: Enable formatting capabilities
-        on_init = function(client)
+        on_attach = function(client)
           if client.name == "eslint" then
             client.server_capabilities.document_formatting = true
             client.server_capabilities.document_range_formatting = true
