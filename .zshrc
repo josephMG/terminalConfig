@@ -235,7 +235,7 @@ export GOPATH=$HOME/golang
 export PATH=$PATH:$GOPATH/bin
 setopt NO_NOMATCH
 
-[[ -s /home/joseph/.autojump/etc/profile.d/autojump.sh ]] && source /home/joseph/.autojump/etc/profile.d/autojump.sh
+# [[ -s /home/joseph/.autojump/etc/profile.d/autojump.sh ]] && source /home/joseph/.autojump/etc/profile.d/autojump.sh
 #zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
 autoload -Uz bracketed-paste-magic
