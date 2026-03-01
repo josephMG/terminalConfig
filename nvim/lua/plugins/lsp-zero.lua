@@ -314,9 +314,8 @@ return {
     end,
     config = function(_, opts)
       local cmp_nvim_lsp = require("cmp_nvim_lsp")
-      local lspconfig = require("lspconfig")
 
-      lspconfig.eslint.setup({
+      vim.lsp.config("eslint", {
         -- ESLint specific settings
 
         -- Important: Enable formatting capabilities
