@@ -1,6 +1,10 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -206,12 +210,11 @@ printf "\033]0;%s@%s:%s\033\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
+plugins=(rails ruby autojump git zsh-syntax-highlighting zsh-autosuggestions)
+#plugins=(rails ruby autojump git zsh-syntax-highlighting)
 
 bindkey '\e[1~' beginning-of-line
 bindkey '\e[4~' end-of-line
-
-# You may need to manually set your language environment
-export LANG=en_US.UTF-8
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
@@ -225,22 +228,24 @@ function git_diff() {
 function t() {
   # Configure a PuTTY profile to send "t" as the "Remote command". This function will automatically reattach to an existing tmux session if one exists, or start a new one. This function also repeatedly sends our homemade tmux clipboard back to the PuTTY client in the form of an ANSI printer escape sequence. The contents of the homemade clipboard are populated by `bind -t vi-copy y copy-pipe 'cat > ~/.tmux-buffer'` in tmux.conf. It is expected that the PuTTY client will be configured to print to a "Microsoft XPS Document Writer" which saves the printer output to a file. The file is subsequently read by an AutoHotkey macro, and the contents are made available for paste.
   [[ "$TERM" == "xterm" ]] || return 0 # This prevents recursive runs, in case t() is called after tmux is started.
-#  { while :; do tput mc5; cat ~/.tmux-buffer; tput mc4; sleep 5; done } &
-  tmux -2 attach || tmux -2
+#  { while :; do tput mc5; cat ~/.tmux-buffer; tput mc14; sleep 7; done } &
+  tmux -2 attach || tmux 5
 }
 
 #export TERM="xterm"
 #export TERM="xterm-256color"
 export GOPATH=$HOME/golang
+export ASDF_DATA_DIR="$HOME/.asdf"
 export PATH=$PATH:$GOPATH/bin
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:${ASDF_DATA_DIR:-$HOME/.asdf}/asdf:$PATH"
 setopt NO_NOMATCH
 
 [[ -s /home/joseph/.autojump/etc/profile.d/autojump.sh ]] && source /home/joseph/.autojump/etc/profile.d/autojump.sh
 #fpath=(${ASDF_DIR}/completions $fpath)
 #autoload -U +X bashcompinit && bashcompinit
 #autoload -Uz compinit && compinit
-#autoload -Uz compinit && compinit
-#zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+autoload -Uz compinit && compinit
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
 autoload -Uz bracketed-paste-magic
 zle -N bracketed-paste bracketed-paste-magic
@@ -259,12 +264,18 @@ command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
 
-. "$HOME/.asdf/asdf.sh"
-fpath=(${ASDF_DIR}/completions $fpath)
-
 alias vim=nvim
 
-export GROQ_API_KEY=""
-
-# eval "$(ulimit -n 1048576)"
+export GROQ_API_KEY=
+export GEMINI_API_KEY=
 ulimit -n 1048576
+# Added by Antigravity
+export PATH="/Users/yuhsuanlin/.antigravity/antigravity/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+
+# ═══════════════════════════════════════════════════════════════
+# 安全刪除 - rm 改用垃圾桶（可還原）
+# ═══════════════════════════════════════════════════════════════
+alias rm='trash'
+# 真的要永久刪除時用 rm! 或 /bin/rm
+alias rm!='/bin/rm'

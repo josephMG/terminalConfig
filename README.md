@@ -2,6 +2,8 @@
 - brew
   - ripgrep
   - fzf
+  - neofetch
+  - trash
 - item2
   - https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/Tomorrow%20Night%20Eighties.itermcolors
 - vim-plug or neovim
